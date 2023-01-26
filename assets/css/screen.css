@@ -15,6 +15,7 @@ h1{
 h2{
   font-size: 1.6em; /* 32 / 20 */
   line-height: 1.125em; /* 36 / 20 */
+  margin-bottom: 0px;
 }
 
 h1,h2{
@@ -35,4 +36,10 @@ header,main{
 img{
   display: block;
   max-width: 100%;
+}
+
+figcaption{
+  font-size: 0.8em; /* 16 / 20 */
+  line-height: 1.25em; /* 20 / 16 */
+  text-align: center;
 }

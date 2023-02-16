@@ -3,3 +3,9 @@ extends layout
 block content
   h1= title
   p Please enter the contact information.
+  form(method='POST', action='/contacts/create')
+    input(type='text', name='firstName', placeholder='First Name')
+    input(type='text', name='lastName' placeholder='Last Name')
+    input(type='text', name='email' placeholder='Email Address')
+    input(type='text', name='notes' placeholder='Notes - Can be blank')
+    button(type='submit') Create Contact

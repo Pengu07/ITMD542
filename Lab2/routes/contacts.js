@@ -8,4 +8,8 @@ router.get('/', function(req, res, next) {
   res.render('contacts', {title: 'Contacts'});
 });
 
+router.get('/create', function(req, res, next) {
+    res.render('contacts_create', { title: 'Create a new contact'});
+});
+
 module.exports = router;

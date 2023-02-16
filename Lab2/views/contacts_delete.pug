@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  p Are you sure you want to delete the following contact?
+
+    ul.contact
+      li= contact.id
+      li= contact.firstName
+      li= contact.lastName
+      li= contact.email
+      li= contact.notes
+      li= contact.creation
+
+  form(method='POST', action=`/contacts/${contact.id}/delete`)
+    button(type='submit') Confirm
+    a(href='/contacts/') Cancel

@@ -48,7 +48,17 @@ router.get('/:id', function(req, res, next) {
     else {
         res.redirect('/error')
     }
-
   });
 
+/* GET - Delete contact */
+router.get('/:id/delete', function(req, res, next) {
+    const contact = contactsRepository.findByID(req.params.id);
+    res.render('contacts_delete', { title: 'Delete Contact', contact: contact});
+});
+
+/* POST - Delete contact */
+router.post('/:id/delete', function(req, res, next) {
+    contactsRepository.deleteByID(req.params.id);
+    res.redirect('/contacts')
+});
 module.exports = router;

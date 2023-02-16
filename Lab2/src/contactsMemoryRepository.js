@@ -24,6 +24,7 @@ const repository = {
 
         database.set(newContact.id, newContact);
     },
+    deleteByID: (id) => database.delete(id),
 };
 
 module.exports = repository;

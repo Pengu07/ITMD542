@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Examining single contact 
+    ul.contact
+      li= contact.id
+      li= contact.firstName
+      li= contact.lastName
+      li= contact.email
+      li= contact.notes
+      li= contact.creation

@@ -3,15 +3,19 @@ var router = express.Router();
 const contactsRepository = require ('../src/contactsMemoryRepository');
 const { body, validationResult } = require ('express-validator');
 
+/* GET - Find All */
 router.get('/', function(req, res, next) {
   const data = contactsRepository.findAll();
   res.render('contacts', {title: 'Contacts', contacts: data});
 });
 
+
+/* GET - Initialize form to create new contact */
 router.get('/create', function(req, res, next) {
     res.render('contacts_create', { title: 'Create a new contact'});
 });
 
+/* POST - Create new contact with entered fields if valid */
 router.post('/create',
     body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
     body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
@@ -34,5 +38,17 @@ router.post('/create',
         res.redirect('/contacts');
     }
 });
+
+/* GET - Find single contact */
+router.get('/:id', function(req, res, next) {
+    const contact = contactsRepository.findByID(req.params.id);
+    if(contact) {
+        res.render('contacts_single', {title: 'Contacts', contact: contact});
+    }
+    else {
+        res.redirect('/error')
+    }
+
+  });
 
 module.exports = router;

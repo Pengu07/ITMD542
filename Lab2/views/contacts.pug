@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-
+  a(href='/contacts/create') Create a new contact
   if contacts.length > 0
     ul.contacts
       each value in contacts
@@ -13,3 +13,5 @@ block content
         li(data-contactsid=value.id)= value.email
         li(data-contactsid=value.id)= value.notes
         li(data-contactsid=value.id)= value.creation
+        li(data-contactsid=value.id)
+          a(href=`/contacts/${value.id}`)= 'View Contact'

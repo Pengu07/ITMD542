@@ -1,9 +1,12 @@
 const database = new Map();
 let numberId = 0;
 
+const testData = {id: '5',firstName: 'will',lastName: 'william',email: 'william@gm.com',notes: 'asdf',creation: new Date()};
+database.set('5',testData);
 
 const repository = {
     findAll: () => Array.from(database.values()),
+    findByID: (id) => database.get(id),
     create: (contacts) => {
         const newContact = {
             id: numberId++,

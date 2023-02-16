@@ -1,8 +1,8 @@
 const database = new Map();
-let numberId = 0;
+let numberId = 1;
 
-const testData = {id: '5',firstName: 'will',lastName: 'william',email: 'william@gm.com',notes: 'asdf',creation: new Date()};
-database.set('5',testData);
+const testData = {id: '0',firstName: 'William',lastName: 'Smith',email: 'WillS@Email.com',notes: 'Example Text',creation: new Date()};
+database.set('0',testData);
 
 const repository = {
     findAll: () => Array.from(database.values()),
@@ -25,6 +25,7 @@ const repository = {
         database.set(newContact.id, newContact);
     },
     deleteByID: (id) => database.delete(id),
+    update: (contact) => database.set(contact.id, contact),
 };
 
 module.exports = repository;

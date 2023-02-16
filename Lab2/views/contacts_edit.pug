@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1= title
+  p Edit the contact information.
+
+  if message
+    ul
+      each value in message
+        li=value.msg
+
+  form(method='POST', action=`/contacts/${contact.id}/edit`)
+    input(type='text', name='id', value=contact.id, disabled)
+    input(type='text', name='firstName', placeholder='First Name', value=contact.firstName)
+    input(type='text', name='lastName' placeholder='Last Name', value=contact.lastName)
+    input(type='text', name='email' placeholder='Email Address', value=contact.email)
+    input(type='text', name='notes' placeholder='Notes - Can be blank', value=contact.notes)
+    input(type='text', name='dateCreated', value=contact.creation, disabled)
+    button(type='submit') Edit Contact
+    a(href='/contacts/') Cancel

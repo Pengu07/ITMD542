@@ -61,4 +61,39 @@ router.post('/:id/delete', function(req, res, next) {
     contactsRepository.deleteByID(req.params.id);
     res.redirect('/contacts')
 });
+
+/* GET - Edit contact */
+router.get('/:id/edit', function(req, res, next) {
+    const contact = contactsRepository.findByID(req.params.id);
+    res.render('contacts_edit', { title: 'Edit Contact', contact: contact});
+});
+
+/* POST - Edit Contact */
+router.post('/:id/edit',
+    body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
+    body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
+    body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
+    body('notes').trim(),
+    function(req, res, next) {
+
+    const result = validationResult(req);
+    if (result.isEmpty() != true){
+        const contact = contactsRepository.findByID(req.params.id);
+        res.render('contacts_edit', { title: 'Edit Contact', contact: contact, message: result.array() })
+    }
+    else{
+        const contact = contactsRepository.findByID(req.params.id);
+        const updatedContact = {
+            id: req.params.id,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            notes: req.body.notes,
+            creation: contact.creation,
+        };
+        contactsRepository.update(updatedContact);
+        res.redirect('/contacts');
+    }
+});
+
 module.exports = router;

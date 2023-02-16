@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const contactsRepository = require ('../src/contactsMemoryRepository');
+const contactsRepository = require ('../src/contactsRepository');
 const { body, validationResult } = require ('express-validator');
 
 /* GET - Find All */

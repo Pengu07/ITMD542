@@ -3,3 +3,13 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  if contacts.length > 0
+    ul.contacts
+      each value in contacts
+        li(data-contactsid=value.id)= value.id
+        li(data-contactsid=value.id)= value.firstName
+        li(data-contactsid=value.id)= value.lastName
+        li(data-contactsid=value.id)= value.email
+        li(data-contactsid=value.id)= value.notes
+        li(data-contactsid=value.id)= value.creation

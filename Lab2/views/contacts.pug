@@ -15,3 +15,7 @@ block content
         li(data-contactsid=value.id)= value.creation
         li(data-contactsid=value.id)
           a(href=`/contacts/${value.id}`)= 'View Contact'
+        li(data-contactsid=value.id)
+          a(href=`/contacts/${value.id}/edit`)= 'Edit Contact'
+        li(data-contactsid=value.id)
+          a(href=`/contacts/${value.id}/delete`)= 'Delete Contact'

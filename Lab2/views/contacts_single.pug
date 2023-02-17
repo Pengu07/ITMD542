@@ -40,6 +40,9 @@ block content
           label(for="notes") Notes
           textarea(class="form-control", id="notes", name="notes", disabled, rows="3")= contact.notes
         div(class="form-group")
-            label(for="creation") Date and Time of creation
-            input(type="text", class="form-control", name="creation" id="creation", disabled, value= contact.creation)
+          label(for="creation") Contact created
+          input(type="text", class="form-control", name="creation" id="creation", disabled, value= contact.creation)
+        div(class="form-group")
+          label(for="modified") Last modified
+          input(type="text", class="form-control", name="modified" id="modified", disabled, value= contact.modified)
         a(href='/contacts/', class="btn btn-primary") Return to Contacts

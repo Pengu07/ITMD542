@@ -90,6 +90,7 @@ router.post('/:id/edit',
             email: req.body.email,
             notes: req.body.notes,
             creation: contact.creation,
+            modified: Date(),
         };
         contactsRepository.update(updatedContact);
         res.redirect('/contacts');

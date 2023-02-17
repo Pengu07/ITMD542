@@ -27,6 +27,7 @@ const repository = {
             email: contacts.email,
             notes: contacts.notes,
             creation: Date(),
+            modified: Date(),
             /*This can be used if we want to standardize the time across the database
             if it was used in multiple locations at once.
 

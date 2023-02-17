@@ -17,14 +17,14 @@ block content
           li(class="nav-item")
             a(class="nav-link", href="/contacts") Contacts
 
-  if message
-    ul
-      each value in message
-        li=value.msg
   main(class="container")
     div(class="bg-light p-5 rounded")
       h1= title
       p Please enter the new contact information.
+        if message
+          ul
+            each value in message
+              li(class="text-danger")=value.msg
 
       form(method='POST', action='/contacts/create')
         div(class="form-row")

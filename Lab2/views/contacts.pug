@@ -21,8 +21,8 @@ block content
   main(class="container")
     div(class="bg-light p-5 rounded")
       h1= title
-      p Welcome to #{title}
-      a(href='/contacts/create') Create a new contact
+      p Welcome to the contacts page!
+      a(href='/contacts/create', class='btn btn-primary') Create a new contact
       if contacts.length > 0
         table(class="table table-hover table-dark")
           thead

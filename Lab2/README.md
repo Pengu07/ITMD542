@@ -22,9 +22,12 @@ NodeJS version: v19.6.0
 Editor used: Visual Studio Code
 
 ## Installation Instructions
-
-
-
+To install and run this app do the following:
+1. Download or clone the repository
+2. Once extracted or cloned, enter the Lab2 directory of the ITMD 542 repository with the terminal
+3. Run the command `npm install` to install needed dependencies
+4. Run the command `npm run start` to start the application
+5. You can access the app at the web address `localhost:3000`
 
 ## Insights and Results 
 I think this assignment did a good job showing me how to utilize Node JS and some of its features better. Along with the efficiency that comes with using express js.

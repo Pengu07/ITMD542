@@ -29,16 +29,16 @@ block content
         div(class="form-row")
           div(class="form-group col-md-6")
             label(for="firstName") First Name
-            input(type="text", class="form-control", name="firstName" id="firstName", value= contact.firstName)
+            input(type="text", class="form-control", name="firstName", disabled, id="firstName", value= contact.firstName)
           div(class="form-group col-md-6")
             label(for="lastName") Last Name
-            input(type="text", class="form-control", name="lastName", id="lastName", value= contact.lastName)
+            input(type="text", class="form-control", name="lastName", disabled, id="lastName", value= contact.lastName)
         div(class="form-group")
           label(for="email") Email
-          input(type="email", class="form-control", name="email", id="email", value= contact.email)
+          input(type="email", class="form-control", name="email", disabled, id="email", value= contact.email)
         div(class="form-group")
           label(for="notes") Notes
-          textarea(class="form-control", id="notes", name="notes", rows="3", value= contact.notes)
+          textarea(class="form-control", id="notes", name="notes", disabled, rows="3")= contact.notes
         div(class="form-group")
             label(for="creation") Date and Time of creation
             input(type="text", class="form-control", name="creation" id="creation", disabled, value= contact.creation)

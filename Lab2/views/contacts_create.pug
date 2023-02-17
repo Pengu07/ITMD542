@@ -30,15 +30,15 @@ block content
         div(class="form-row")
           div(class="form-group col-md-6")
             label(for="firstName") First Name
-            input(type="text", class="form-control", name="firstName" id="firstName", placeholder="First Name")
+            input(type="text", required, class="form-control", name="firstName" id="firstName", placeholder="First Name")
           div(class="form-group col-md-6")
             label(for="lastName") Last Name
-            input(type="text", class="form-control", name="lastName", id="lastName", placeholder="Last Name")
+            input(type="text", required, class="form-control", name="lastName", id="lastName", placeholder="Last Name")
         div(class="form-group")
           label(for="email") Email
-          input(type="email", class="form-control", name="email", id="email", placeholder="email@website.com")
+          input(type="email", required, class="form-control", name="email", id="email", placeholder="email@website.com")
         div(class="form-group")
-          label(for="notes") Notes
+          label(for="notes") Note
           textarea(class="form-control", id="notes", name="notes", rows="3", placeholder='Notes - Can be blank')
         button(type="submit", class="btn btn-primary") Create Contact
         a(href='/contacts/', class="btn btn-danger") Cancel

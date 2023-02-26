@@ -9,20 +9,6 @@ const db = new sqlite(path.join(__dirname, '../database/contacts.sqlite'), {verb
 const createTable = db.prepare("CREATE TABLE IF NOT EXISTS CONTACTS (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT NOT NULL, notes TEXT, creation TEXT, modified TEXT)");
 createTable.run();
 
-
-const saveData = () => {
-    const stringifyData = JSON.stringify(Array.from(database));
-    fs.writeFileSync(path.join(__dirname, '../database/contacts.json'), stringifyData);
-};
-
-const loadData = () => {
-    const fileData = fs.readFileSync(path.join(__dirname, '../database/contacts.json'));
-    const contactsArray = JSON.parse(fileData);
-    contactsArray.forEach(element => {
-        database.set(element[0], element[1]);
-    });
-};
-
 const repository = {
     findAll: () => Array.from(database.values()),
     findByID: (id) => database.get(id),
@@ -54,7 +40,5 @@ const repository = {
         saveData();
     },
 };
-
-loadData();
 
 module.exports = repository;

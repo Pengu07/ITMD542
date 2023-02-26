@@ -34,8 +34,8 @@ block content
           tbody
             each value in contacts
               tr
-                td= value.firstName
-                td= value.lastName
+                td= value.first_name
+                td= value.last_name
                 td= value.email
                 td
                   a(href=`/contacts/${value.id}`, class="btn btn-primary")= 'View Contact '

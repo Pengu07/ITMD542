@@ -29,11 +29,11 @@ block content
       form(method='POST', action=`/contacts/${contact.id}/edit`)
         div(class="form-row")
           div(class="form-group col-md-6")
-            label(for="firstName") First Name
-            input(type="text", required, class="form-control", name="firstName" id="firstName", value=contact.firstName)
+            label(for="first_name") First Name
+            input(type="text", required, class="form-control", name="first_name" id="first_name", value=contact.first_name)
           div(class="form-group col-md-6")
-            label(for="lastName") Last Name
-            input(type="text", required, class="form-control", name="lastName", id="lastName", value=contact.lastName)
+            label(for="last_name") Last Name
+            input(type="text", required, class="form-control", name="last_name", id="last_name", value=contact.last_name)
         div(class="form-group")
           label(for="email") Email
           input(type="email", required, class="form-control", name="email", id="email", value=contact.email)

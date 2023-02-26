@@ -36,9 +36,10 @@ const repository = {
         const deletedContact = statement.run(id);
         console.log(`Deleted contact: ${deletedContact.lastInsertRowid}`)
     },
-    update: (contact) => {
-        database.set(contact.id, contact);
-        saveData();
+    update: (contacts) => {
+        const statement = db.prepare("UPDATE CONTACTS SET first_name = ?, last_name = ?, email = ?, notes = ?, modified = ? WHERE id = ?");
+        const updatedContact = statement.run(contacts.first_name, contacts.last_name, contacts.email, contacts.notes, contacts.modified, contacts.id);
+        console.log(`Updated contact: ${updatedContact.changes}`);
     },
 };
 

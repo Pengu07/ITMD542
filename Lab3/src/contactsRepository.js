@@ -23,23 +23,9 @@ const repository = {
     },
     findByID: (id) => database.get(id),
     create: (contacts) => {
-        const newContact = {
-            id: crypto.randomUUID(),
-            firstName: contacts.firstName,
-            lastName: contacts.lastName,
-            email: contacts.email,
-            notes: contacts.notes,
-            creation: Date(),
-            modified: Date(),
-            /*This can be used if we want to standardize the time across the database
-            if it was used in multiple locations at once.
-
-            creation: new Date().toUTCString(),
-            */
-        };
-
-        database.set(newContact.id, newContact);
-        saveData();
+        const statement = db.prepare("INSERT INTO CONTACTS (first_name, last_name, email, notes, creation, modified) VALUES (?, ?, ?, ?, ?, ?)");
+        const createdContact = statement.run(contacts.first_name, contacts.last_name, contacts.email, contacts.notes, contacts.creation, contacts.modified);
+        console.log(`Contact with ID ${createdContact.lastInsertRowid} has been created`);
     },
     deleteByID: (id) => {
         database.delete(id);

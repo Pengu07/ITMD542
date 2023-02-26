@@ -32,8 +32,9 @@ const repository = {
         console.log(`Contact with ID ${createdContact.lastInsertRowid} has been created`);
     },
     deleteByID: (id) => {
-        database.delete(id);
-        saveData();
+        const statement = db.prepare("DELETE FROM CONTACTS WHERE id = ?");
+        const deletedContact = statement.run(id);
+        console.log(`Deleted contact: ${deletedContact.lastInsertRowid}`)
     },
     update: (contact) => {
         database.set(contact.id, contact);

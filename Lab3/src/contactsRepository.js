@@ -2,6 +2,13 @@ const database = new Map();
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const sqlite = require('better-sqlite3');
+
+const db = new sqlite(path.join(__dirname, '../database/contacts.sqlite'), {verbose: console.log});
+
+const createTable = db.prepare("CREATE TABLE IF NOT EXISTS CONTACTS (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT NOT NULL, last_name TEXT NOT NULL, email TEXT NOT NULL, notes TEXT, creation TEXT, modified TEXT)");
+createTable.run();
+
 
 const saveData = () => {
     const stringifyData = JSON.stringify(Array.from(database));

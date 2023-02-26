@@ -1,5 +1,6 @@
 const contactsRepository = require ('../src/contactsRepository');
 const { validationResult } = require ('express-validator');
+const Contact = require('../src/Contact');
 
 /* GET - Find All */
 exports.contacts_list = function(req, res, next) {
@@ -21,14 +22,9 @@ exports.contacts_list = function(req, res, next) {
           res.render('contacts_create', { title: 'Create a new contact', message: result.array() })
       }
       else{
-          contactsRepository.create({
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              email: req.body.email,
-              notes: req.body.notes,
-          });
-  
-          res.redirect('/contacts');
+        const newContact = new Contact('', req.body.firstName, req.body.lastName, req.body.email, req.body.notes, Date(), Date());
+        contactsRepository.create(newContact);
+        res.redirect('/contacts');
       }
   };
   
@@ -71,15 +67,7 @@ exports.contacts_list = function(req, res, next) {
       }
       else{
           const contact = contactsRepository.findByID(req.params.id);
-          const updatedContact = {
-              id: req.params.id,
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              email: req.body.email,
-              notes: req.body.notes,
-              creation: contact.creation,
-              modified: Date(),
-          };
+          const updatedContact = new Contact(req.params.id, req.body.firstName, req.body.lastName, req.body.email, req.body.notes, contact.creation, Date());
           contactsRepository.update(updatedContact);
           res.redirect('/contacts');
       }

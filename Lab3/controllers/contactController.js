@@ -22,7 +22,7 @@ exports.contacts_list = function(req, res, next) {
           res.render('contacts_create', { title: 'Create a new contact', message: result.array() })
       }
       else{
-        const newContact = new Contact('', req.body.firstName, req.body.lastName, req.body.email, req.body.notes, Date(), Date());
+        const newContact = new Contact('', req.body.first_name, req.body.last_name, req.body.email, req.body.notes, Date(), Date());
         contactsRepository.create(newContact);
         res.redirect('/contacts');
       }
@@ -67,7 +67,7 @@ exports.contacts_list = function(req, res, next) {
       }
       else{
           const contact = contactsRepository.findByID(req.params.id);
-          const updatedContact = new Contact(req.params.id, req.body.firstName, req.body.lastName, req.body.email, req.body.notes, contact.creation, Date());
+          const updatedContact = new Contact(req.params.id, req.body.first_name, req.body.last_name, req.body.email, req.body.notes, contact.creation, Date());
           contactsRepository.update(updatedContact);
           res.redirect('/contacts');
       }

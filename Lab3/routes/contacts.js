@@ -12,8 +12,8 @@ router.get('/create', contactsController.contacts_get_create);
 
 /* POST - Create new contact with entered fields if valid */
 router.post('/create',
-    body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
-    body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
+    body('first_name').trim().notEmpty().withMessage('First Name cannot be empty!'),
+    body('last_name').trim().notEmpty().withMessage('Last Name cannot be empty!'),
     body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
     body('notes').trim(),
     contactsController.contacts_post_create);
@@ -32,8 +32,8 @@ router.get('/:id/edit', contactsController.contacts_get_edit);
 
 /* POST - Edit Contact */
 router.post('/:id/edit',
-    body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
-    body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
+    body('first_name').trim().notEmpty().withMessage('First Name cannot be empty!'),
+    body('last_name').trim().notEmpty().withMessage('Last Name cannot be empty!'),
     body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
     body('notes').trim(),
     contactsController.contacts_post_edit);

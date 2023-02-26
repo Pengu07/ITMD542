@@ -22,7 +22,7 @@ const repository = {
         return contacts;
     },
     findByID: (id) => {
-        const statement = db.prepare("SELECT * FROM CONTACTS WHERE id = ?")
+        const statement = db.prepare("SELECT * FROM CONTACTS WHERE id = ?");
         const row = statement.get(id);
         return new Contact(row.id, row.first_name, row.last_name, row.email, row.notes, row.creation, row.modified);
     },
@@ -34,7 +34,7 @@ const repository = {
     deleteByID: (id) => {
         const statement = db.prepare("DELETE FROM CONTACTS WHERE id = ?");
         const deletedContact = statement.run(id);
-        console.log(`Deleted contact: ${deletedContact.lastInsertRowid}`)
+        console.log(`Deleted contact: ${deletedContact.lastInsertRowid}`);
     },
     update: (contacts) => {
         const statement = db.prepare("UPDATE CONTACTS SET first_name = ?, last_name = ?, email = ?, notes = ?, modified = ? WHERE id = ?");

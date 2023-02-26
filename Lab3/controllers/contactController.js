@@ -1,25 +1,20 @@
 const contactsRepository = require ('../src/contactsRepository');
-const { body, validationResult } = require ('express-validator');
+const { validationResult } = require ('express-validator');
 
 /* GET - Find All */
-router.get('/', function(req, res, next) {
+exports.contacts_list = function(req, res, next) {
     const data = contactsRepository.findAll();
     res.render('contacts', {title: 'Contacts', contacts: data});
-  });
+  };
   
   
   /* GET - Initialize form to create new contact */
-  router.get('/create', function(req, res, next) {
+ exports.contacts_get_create = function(req, res, next) {
       res.render('contacts_create', { title: 'Create a new contact'});
-  });
+  };
   
   /* POST - Create new contact with entered fields if valid */
-  router.post('/create',
-      body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
-      body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
-      body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
-      body('notes').trim(),
-      function(req, res, next) {
+  exports.contacts_post_create = function(req, res, next) {
   
       const result = validationResult(req);
       if (result.isEmpty() != true){
@@ -35,10 +30,10 @@ router.get('/', function(req, res, next) {
   
           res.redirect('/contacts');
       }
-  });
+  };
   
   /* GET - Find single contact */
-  router.get('/:id', function(req, res, next) {
+  exports.contacts_individual = function(req, res, next) {
       const contact = contactsRepository.findByID(req.params.id);
       if(contact) {
           res.render('contacts_single', {title: 'Contacts', contact: contact});
@@ -46,33 +41,28 @@ router.get('/', function(req, res, next) {
       else {
           res.redirect('/error')
       }
-    });
+    };
   
   /* GET - Delete contact */
-  router.get('/:id/delete', function(req, res, next) {
+  exports.contacts_get_delete = function(req, res, next) {
       const contact = contactsRepository.findByID(req.params.id);
       res.render('contacts_delete', { title: 'Delete Contact', contact: contact});
-  });
+  };
   
   /* POST - Delete contact */
-  router.post('/:id/delete', function(req, res, next) {
+  exports.contacts_post_delete = function(req, res, next) {
       contactsRepository.deleteByID(req.params.id);
       res.redirect('/contacts')
-  });
+  };
   
   /* GET - Edit contact */
-  router.get('/:id/edit', function(req, res, next) {
+  exports.contacts_get_edit = function(req, res, next) {
       const contact = contactsRepository.findByID(req.params.id);
       res.render('contacts_edit', { title: 'Edit Contact', contact: contact});
-  });
+  };
   
   /* POST - Edit Contact */
-  router.post('/:id/edit',
-      body('firstName').trim().notEmpty().withMessage('First Name cannot be empty!'),
-      body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
-      body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
-      body('notes').trim(),
-      function(req, res, next) {
+  exports.contacts_post_edit = function(req, res, next) {
   
       const result = validationResult(req);
       if (result.isEmpty() != true){
@@ -93,4 +83,4 @@ router.get('/', function(req, res, next) {
           contactsRepository.update(updatedContact);
           res.redirect('/contacts');
       }
-  });
+  };

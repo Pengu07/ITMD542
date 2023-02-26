@@ -21,7 +21,11 @@ const repository = {
         });
         return contacts;
     },
-    findByID: (id) => database.get(id),
+    findByID: (id) => {
+        const statement = db.prepare("SELECT * FROM CONTACTS WHERE id = ?")
+        const row = statement.get(id);
+        return new Contact(row.id, row.first_name, row.last_name, row.email, row.notes, row.creation, row.modified);
+    },
     create: (contacts) => {
         const statement = db.prepare("INSERT INTO CONTACTS (first_name, last_name, email, notes, creation, modified) VALUES (?, ?, ?, ?, ?, ?)");
         const createdContact = statement.run(contacts.first_name, contacts.last_name, contacts.email, contacts.notes, contacts.creation, contacts.modified);

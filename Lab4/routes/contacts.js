@@ -4,8 +4,8 @@ const contactsRepository = require ('../src/contactsRepository');
 const { body, validationResult } = require ('express-validator');
 
 /* GET - Find All */
-router.get('/', function(req, res, next) {
-  const data = contactsRepository.findAll();
+router.get('/', async function(req, res, next) {
+  const data = await contactsRepository.findAll();
   res.render('contacts', {title: 'Contacts', contacts: data});
 });
 

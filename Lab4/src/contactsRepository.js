@@ -10,12 +10,8 @@ const col = database.collection(collectionName);
 
 const repository = {
 
-    findAll: async () => {
-        await mongodb.connect();
-        const data = await col.find().toArray()
-    },
-    
-    /*findByID: (id) => database.get(id),*/
+    findAll: async () => await col.find().toArray(),
+    findByID: async (id) => await col.findOne({ id: id }),
     create: async (contacts) => {
         const newContact = {
             id: crypto.randomUUID(),

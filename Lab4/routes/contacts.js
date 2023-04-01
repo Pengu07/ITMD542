@@ -40,8 +40,8 @@ router.post('/create',
 });
 
 /* GET - Find single contact */
-router.get('/:id', function(req, res, next) {
-    const contact = contactsRepository.findByID(req.params.id);
+router.get('/:id', async function(req, res, next) {
+    const contact = await contactsRepository.findByID(req.params.id);
     if(contact) {
         res.render('contacts_single', {title: 'Contacts', contact: contact});
     }

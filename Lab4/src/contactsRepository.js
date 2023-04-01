@@ -25,17 +25,23 @@ const repository = {
             if it was used in multiple locations at once.*/
 
             creation: new Date().toUTCString(),
+            modified: new Date().toUTCString(),
             
         };
 
         await col.insertOne(newContact);
-    },/*
-    deleteByID: (id) => {
-        database.delete(id);
     },
-    update: (contact) => {
-        database.set(contact.id, contact);
-    }, */
+    deleteByID: async (id) => await col.deleteOne({ id: id }),
+    update: async (contact) => {
+        await col.updateOne({id: contact.id}, { $set: { 
+            firstName: contact.firstName,
+            lastName: contact.lastName,
+            email: contact.email,
+            notes: contact.notes,
+            modified: new Date().toUTCString(),
+
+        }});
+    },
 };
 
 module.exports = repository;

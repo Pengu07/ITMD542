@@ -51,20 +51,20 @@ router.get('/:id', async function(req, res, next) {
   });
 
 /* GET - Delete contact */
-router.get('/:id/delete', function(req, res, next) {
-    const contact = contactsRepository.findByID(req.params.id);
+router.get('/:id/delete', async function(req, res, next) {
+    const contact = await contactsRepository.findByID(req.params.id);
     res.render('contacts_delete', { title: 'Delete Contact', contact: contact});
 });
 
 /* POST - Delete contact */
-router.post('/:id/delete', function(req, res, next) {
-    contactsRepository.deleteByID(req.params.id);
+router.post('/:id/delete', async function(req, res, next) {
+    await contactsRepository.deleteByID(req.params.id);
     res.redirect('/contacts')
 });
 
 /* GET - Edit contact */
-router.get('/:id/edit', function(req, res, next) {
-    const contact = contactsRepository.findByID(req.params.id);
+router.get('/:id/edit', async function(req, res, next) {
+    const contact = await contactsRepository.findByID(req.params.id);
     res.render('contacts_edit', { title: 'Edit Contact', contact: contact});
 });
 
@@ -74,11 +74,11 @@ router.post('/:id/edit',
     body('lastName').trim().notEmpty().withMessage('Last Name cannot be empty!'),
     body('email').trim().notEmpty().withMessage('Email cannot be empty!').isEmail().withMessage('Must be a valid email address!'),
     body('notes').trim(),
-    function(req, res, next) {
+    async function(req, res, next) {
 
     const result = validationResult(req);
     if (result.isEmpty() != true){
-        const contact = contactsRepository.findByID(req.params.id);
+        const contact = await contactsRepository.findByID(req.params.id);
         res.render('contacts_edit', { title: 'Edit Contact', contact: contact, message: result.array() })
     }
     else{
@@ -92,7 +92,7 @@ router.post('/:id/edit',
             creation: contact.creation,
             modified: Date(),
         };
-        contactsRepository.update(updatedContact);
+        await contactsRepository.update(updatedContact);
         res.redirect('/contacts');
     }
 });

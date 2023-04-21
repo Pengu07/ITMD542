@@ -2,12 +2,74 @@ var express = require('express');
 var router = express.Router();
 const accountsController = require ('../account/accountController');
 const { body, validationResult } = require ('express-validator');
+var passport = require ('passport')
+var local = require ('passport-local')
+
+async function loginUser(username, password, done){
+    try {
+        // Try to find the user with the given username
+        const user = await accountsController.findByUsername(username);
+        // Check if user exists or not
+        if(user){
+            // Check if passwords match
+            if(user.password == password){
+                return done(null, user)
+            }
+            else{
+                return done(null, false, {message: "Wrong username or password!"})
+            }
+        }
+        else{
+            return done(null, false, {message: "Wrong username or password!"})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+passport.use(new local({
+    username: 'username',
+    password: 'password'
+}, loginUser));
+
+passport.serializeUser(function(user, done) {
+    process.nextTick(function () {
+        done(null, {id: user._id, username: user.username})
+    })
+})
+
+passport.deserializeUser(function(user, done) {
+    process.nextTick(function () {
+        return done(null, user)
+    })
+})
+
 
 /* GET login page */
 router.get('/', function(req, res, next) {
-    res.render('login', { title: 'login' });
+    // If there has been an unsuccessful login, generate error text
+    // Otherwise, show normal login
+    try {
+        if(req.session.messages){
+            let error = req.session.messages.pop()
+            res.render('login', { title: 'login', error: error });
+        }
+        else{
+            res.render('login', { title: 'login'});
+        }
+    } catch (err) {
+        console.log(err)
+    }
 });
 
+/* POST login page */
+/* Authenticates login using passports local strategy */
+router.post('/', passport.authenticate('local', {
+    successRedirect: '/home',
+    failureRedirect: '/login',
+    failureMessage: true
+}));
+                          
 /* GET signup page */
 router.get('/signup', function(req, res, next) {
     res.render('signup', { title: 'signup' });

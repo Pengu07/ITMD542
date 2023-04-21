@@ -5,15 +5,25 @@ block customcss
 block content
     body.text-center
         main.form-signin.w-100.m-auto
-            form
+            form(method='POST', action='/login')
                 img.mb-4(src='https://github.com/pengu07.png' alt='' width='72' height='72')
                 h1.h3.mb-3.fw-normal Sign in!
-                .form-floating
-                    input#floatingInput.form-control(type='username' placeholder='Username')
-                    label(for='floatingInput') Username
-                .form-floating
-                    input#floatingPassword.form-control(type='password' placeholder='Password')
-                    label(for='floatingPassword') Password
+                if error
+                    .form-floating
+                        input#floatingInput.form-control.is-invalid(type='username', placeholder='Username', name="username")
+                        label(for='floatingInput') Username
+                    .form-floating
+                        input#floatingPassword.form-control.is-invalid(type='password', placeholder='Password', name='password')
+                        label(for='floatingPassword') Password
+                        .invalid-feedback
+                            p=error
+                else
+                    .form-floating
+                        input#floatingInput.form-control(type='username', placeholder='Username', name="username")
+                        label(for='floatingInput') Username
+                    .form-floating
+                        input#floatingPassword.form-control(type='password', placeholder='Password', name='password')
+                        label(for='floatingPassword') Password
                 .checkbox.mb-3
                     label
                         input(type='checkbox' value='remember-me')

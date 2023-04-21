@@ -10,6 +10,7 @@ const col = database.collection(collectionName);
 const accountOperations = {
     findAll: async () => await col.find().toArray(),
     findByID: async (id) => await col.findOne({ id: id }),
+    findByUsername: async (username) => await col.findOne({ username: username }),
     create: async (account) => {
         const newAccount = {
             firstName: account.firstName,

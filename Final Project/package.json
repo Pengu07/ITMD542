@@ -1,0 +1,21 @@
+{
+  "name": "final-project",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "set DEBUG=final-project:*&& nodemon ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.6",
+    "debug": "~4.3.4",
+    "dotenv": "^16.0.3",
+    "express": "~4.18.2",
+    "express-validator": "^7.0.1",
+    "http-errors": "~2.0.0",
+    "mongodb": "^5.3.0",
+    "morgan": "~1.10.0",
+    "nodemon": "^2.0.22",
+    "pug": "3.0.2"
+  }
+}

@@ -35,3 +35,7 @@ body {
 img{
     border-radius: 10px;
 }
+
+.bottomText{
+    margin-bottom: 0px;
+}

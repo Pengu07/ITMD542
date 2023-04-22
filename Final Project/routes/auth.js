@@ -175,9 +175,14 @@ router.post('/signup',
                 password: encryptedPassword,
                 salt: salt
             })
-            res.redirect('/login')
+            res.redirect('/login/newAccount')
         }
     
+});
+
+/* GET login page */
+router.get('/newAccount', function(req, res, next) {
+    res.render('login', { signup: 'success'});
 });
 
 module.exports = router;

@@ -8,6 +8,10 @@ block content
             form(method='POST', action='/login')
                 img.mb-4(src='https://github.com/pengu07.png' alt='' width='72' height='72')
                 h1.h3.mb-3.fw-normal Sign in!
+                if signup
+                    .alert.alert-success
+                        p Account successfuly created!
+                        p.bottomText You may now login!
                 if error
                     .form-floating
                         input#floatingInput.form-control.is-invalid(type='username', placeholder='Username', name="username")

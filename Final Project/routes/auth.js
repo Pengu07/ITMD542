@@ -180,7 +180,7 @@ router.post('/signup',
     
 });
 
-/* GET login page */
+/* GET login page when new account created */
 router.get('/newAccount', function(req, res, next) {
     res.render('login', { signup: 'success'});
 });

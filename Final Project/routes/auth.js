@@ -88,10 +88,15 @@ router.post('/signup',
     body('confirmPassword').trim().notEmpty().withMessage('Confirmed Password cannot be empty!'),
     async function(req, res, next){
         const result = validationResult(req);
+        let exists = 0;
 
+        // Check if a username is already in use
+        if(await accountsController.findByUsername(req.body.username)){
+            exists = 1;
+        }
         // If there were errors, generate the validation checks. This also checks that the password and confirmed password
         // are the same
-        if(result.isEmpty() != true || req.body.password != req.body.confirmPassword){
+        if(result.isEmpty() != true || req.body.password != req.body.confirmPassword || exists == 1){
             const results = result.array()
             const updatedResults = []
 
@@ -118,6 +123,9 @@ router.post('/signup',
 
             let confirmPasswordMatches = JSON.parse('{"condition":"0","msg":"Passwords must match!"}')
             updatedResults[5] = confirmPasswordMatches;
+
+            let existingUsername = JSON.parse('{"condition":"0","msg":"This username is already in use!"}')
+            updatedResults[6] = existingUsername;
 
             // This checks all the errors that are provided, and then sets them accordingly
             results.forEach(value => {
@@ -148,6 +156,10 @@ router.post('/signup',
                 updatedResults[5].condition = 1
             }
 
+            // This sets the error for a username being in use
+            if (exists == 1){
+                updatedResults[6].condition = 1
+            }
             res.render('signup', { message: results, updatedResults })
         }
         // If everything is fine, create the account

@@ -31,13 +31,14 @@ block content
     
     main.container
         .bg-body-tertiary.p-5.rounded
+            h3.text-center Create a new item source
             if error
                 .alert.alert-danger
                     each value in error
                         p=value.msg
             form(method='POST', action='/admin/create-source')
                 .row.g-3
-                
+
                     .col-12
                         label.form-label.form-label(for="sourceName") Name
                         input.form-control(type="text", name="sourceName", id="sourceName", placeholder="Name of Item Source", required)
@@ -64,10 +65,6 @@ block content
                         button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Create new item source
                     .col-6
                         a.w-100.btn.btn-danger.btn-md(href='/admin/all-sources') Cancel
-
-            footer.my-5.text-body-secondary.text-center.text-small
-                p.mb-1 Create a new item source!
-
 
 
 

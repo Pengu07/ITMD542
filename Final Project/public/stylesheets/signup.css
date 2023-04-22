@@ -9,4 +9,5 @@ img{
 p{
     padding-top: .25rem;
     font-size: .875em;
+    margin-bottom: 0px !important;
 }

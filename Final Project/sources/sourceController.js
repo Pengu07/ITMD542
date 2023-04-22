@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const connection = process.env.CONNECTION;
 const dbName = process.env.DATABASE_NAME;
 const mongodb = new MongoClient(connection);
@@ -9,7 +9,7 @@ const col = database.collection(collectionName);
 
 const sourceOperations = {
     findAll: async () => await col.find().toArray(),
-    findByID: async (id) => await col.findOne({ id: id }),
+    findByID: async (id) => await col.findOne({ _id: new ObjectId(id)}),
     findByName: async (name) => await col.findOne({ name: name }),
     create: async (source) => {
         const newSource = {
@@ -21,9 +21,9 @@ const sourceOperations = {
 
         await col.insertOne(newSource);
     },
-    deleteByID: async (id) => await col.deleteOne({ id: id }),
+    deleteByID: async (id) => await col.deleteOne({ _id: new ObjectId(id) }),
     update: async (source) => {
-        await col.updateOne({id: source.id}, { $set: { 
+        await col.updateOne({_id: new ObjectId(source.id)}, { $set: { 
             name: source.sourceName,
             location: source.location,
             type: source.type,

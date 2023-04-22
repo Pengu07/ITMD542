@@ -22,11 +22,10 @@ const sourceOperations = {
         await col.insertOne(newSource);
     },
     deleteByID: async (id) => await col.deleteOne({ _id: new ObjectId(id) }),
-    update: async (source) => {
-        await col.updateOne({_id: new ObjectId(source.id)}, { $set: { 
+    update: async (id, source) => {
+        await col.updateOne({_id: new ObjectId(id)}, { $set: { 
             name: source.sourceName,
             location: source.location,
-            type: source.type,
             level: source.level,
         }});
     },

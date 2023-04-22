@@ -30,40 +30,48 @@ block content
     
     main.container
         .bg-body-tertiary.p-5.rounded
-            h3.text-center Create a new item source
+            h3.text-center Are you sure you want to delete this source?
             if error
                 .alert.alert-danger
                     each value in error
                         p=value.msg
-            form(method='POST', action='/admin/create-source')
+            form(method='POST', action=`/admin/delete-source/${source._id}`)
                 .row.g-3
-
+                
                     .col-12
                         label.form-label.form-label(for="sourceName") Name
-                        input.form-control(type="text", name="sourceName", id="sourceName", placeholder="Name of Item Source", required)
+                        input.form-control(type="text", name="sourceName", id="sourceName", placeholder="Name of Item Source", value=source.name, readonly, disabled)
 
                     .col-12
                         label.form-label(for="location") Location
-                        input.form-control(type="text", name="location", id="location", placeholder="Place Name", required)
+                        input.form-control(type="text", name="location", id="location", placeholder="Place Name", value=source.location, readonly, disabled)
                     
 
                     .col-12
                         .form-check
                             label.form-check-label(for="enemy") Enemy
-                            input.form-check-input(type="radio", name="type", id="enemy", value="enemy", required)
+                            if source.type == 'enemy'
+                                input.form-check-input(type="radio", name="type", id="enemy", value="enemy", checked, readonly, disabled)
+                            else
+                                input.form-check-input(type="radio", name="type", id="enemy", value="enemy", readonly, disabled)
+
                         .form-check                
                             label.form-check-label(for="chest") Treasure Chest
-                            input.form-check-input(type="radio", name="type", id="chest", value="chest", required)
+                            if source.type == 'chest'
+                                input.form-check-input(type="radio", name="type", id="chest", value="chest", checked, readonly, disabled)
+                            else
+                                input.form-check-input(type="radio", name="type", id="chest", value="chest", readonly, disabled)
 
                     .col-12
                         label.form-label(for="level") Level
-                        input.form-control(type="number", name="level", id="level", placeholder="Level 1 - 60", min="1", max="60", required)
+                        input.form-control(type="number", name="level", id="level", placeholder="Level 1 - 60", min="1", max="60", value=source.level, readonly, disabled)
                     hr.my-4
 
+                
                     .col-6
-                        button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Create new item source
+                        button.w-100.btn.btn-danger.btn-md.text-center(type="submit") Delete item source
                     .col-6
-                        a.w-100.btn.btn-danger.btn-md(href='/admin/all-sources') Cancel
+                        a.w-100.btn.btn-primary.btn-md(href='/admin/all-sources') Cancel
 
 
 

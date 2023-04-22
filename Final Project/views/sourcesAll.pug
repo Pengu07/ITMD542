@@ -49,9 +49,9 @@ block content
                                 td= value.name
                                 td= value.location
                                 if value.type == 'enemy'
-                                    td= `Level: ${value.level}`
+                                    td= `Enemy level: ${value.level}`
                                 if value.type == 'chest'
-                                    td Chest
+                                    td= `Chest level: ${value.level}`
                                 td
                                     .btn-group
                                         a.btn.btn-primary(href=`/admin/view-source/${value._id}`)= 'View'

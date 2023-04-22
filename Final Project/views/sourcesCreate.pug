@@ -1,0 +1,73 @@
+extends layout
+
+block customcss
+    link(rel='stylesheet', href='/stylesheets/create.css')
+    link(rel='stylesheet', href='/stylesheets/home.css')
+
+block content
+    
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        .container-fluid
+            img.mx-2(src='https://github.com/pengu07.png' alt='' width='36' height='36')
+            button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation")
+                span.navbar-toggler-icon
+            
+            .collapse.navbar-collapse(id="navbarCollapse")
+                ul.navbar-nav.me-auto.mb-2.mb-md-0
+                    li.nav-item
+                    a.nav-link(href="/admin") Home
+                    
+                    li.nav-item
+                    a.nav-link(href="/admin/all-items") Items
+                    
+                    li.nav-item
+                    a.nav-link(href="/admin/all-sources") Item Sources
+                
+            
+                form.d-flex(role="search")
+                    input.form-control.me-2(type="search" placeholder="Search" aria-label="Search")
+                    button.btn.btn-outline-success(type="submitSearch") Search
+
+    
+    main.container
+        .bg-body-tertiary.p-5.rounded
+            if error
+                .alert.alert-danger
+                    each value in error
+                        p=value.msg
+            form(method='POST', action='/admin/create-source')
+                .row.g-3
+                
+                    .col-12
+                        label.form-label.form-label(for="sourceName") Name
+                        input.form-control(type="text", name="sourceName", id="sourceName", placeholder="Name of Item Source", required)
+
+                    .col-12
+                        label.form-label(for="location") Location
+                        input.form-control(type="text", name="location", id="location", placeholder="Place Name", required)
+                    
+
+                    .col-12
+                        .form-check
+                            label.form-check-label(for="enemy") Enemy
+                            input.form-check-input(type="radio", name="type", id="enemy", value="enemy", required)
+                        .form-check                
+                            label.form-check-label(for="chest") Treasure Chest
+                            input.form-check-input(type="radio", name="type", id="chest", value="chest", required)
+
+                    .col-12
+                        label.form-label(for="level") Level
+                        input.form-control(type="number", name="level", id="level", placeholder="Level 1 - 60", min="1", max="60", required)
+                    hr.my-4
+
+                    .col-6
+                        button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Create new item source
+                    .col-6
+                        a.w-100.btn.btn-danger.btn-md(href='/admin/all-sources') Cancel
+
+            footer.my-5.text-body-secondary.text-center.text-small
+                p.mb-1 Create a new item source!
+
+
+
+

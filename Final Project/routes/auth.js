@@ -4,6 +4,7 @@ const accountsController = require ('../account/accountController');
 const { body, validationResult } = require ('express-validator');
 var passport = require ('passport')
 var local = require ('passport-local')
+var crypto = require ('crypto')
 
 async function loginUser(username, password, done){
     try {
@@ -12,7 +13,10 @@ async function loginUser(username, password, done){
         // Check if user exists or not
         if(user){
             // Check if passwords match
-            if(user.password == password){
+            // This evaluates the hashed passwords and makes sure the input
+            // password is the same as the hashed one in the database
+            let salt = user.salt
+            if(crypto.pbkdf2Sync(password, salt, 1000000, 64, 'sha512').toString('hex') == user.password){
                 return done(null, user)
             }
             else{
@@ -44,11 +48,11 @@ passport.deserializeUser(function(user, done) {
     })
 })
 
-
 /* GET login page */
 router.get('/', function(req, res, next) {
     // If there has been an unsuccessful login, generate error text
     // Otherwise, show normal login
+
     try {
         if(req.session.messages){
             let error = req.session.messages.pop()
@@ -148,11 +152,16 @@ router.post('/signup',
         }
         // If everything is fine, create the account
         else{
+            // This hashes the password and has a randomized salt to maximize
+            // security. This is set in the accounts database
+            let salt = crypto.randomBytes(32).toString('hex')
+            let encryptedPassword = crypto.pbkdf2Sync(req.body.password, salt, 1000000, 64, 'sha512').toString('hex')
             await accountsController.create({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 username: req.body.username,
-                password: req.body.password
+                password: encryptedPassword,
+                salt: salt
             })
             res.redirect('/login')
         }

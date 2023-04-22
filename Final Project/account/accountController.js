@@ -16,7 +16,8 @@ const accountOperations = {
             firstName: account.firstName,
             lastName: account.lastName,
             username: account.username,
-            password: account.password
+            password: account.password,
+            salt: account.salt
         };
 
         await col.insertOne(newAccount);

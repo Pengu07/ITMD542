@@ -7,8 +7,21 @@ const { body, validationResult } = require ('express-validator');
 var crypto = require ('crypto')
 
 /* GET admin page. */
-router.get('/', function(req, res, next) {
-    res.render('admin', { title: 'Admin' });
+router.get('/', async function(req, res, next) {
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+        else if(checkUser.admin == "admin"){
+            res.render('admin', { title: 'Admin', loggedUser: req.user });
+        }
+    }
 });
 
 /*
@@ -19,19 +32,40 @@ router.get('/', function(req, res, next) {
 
 // GET all sources
 router.get('/all-sources', async function(req, res, next) {
-    try {
-        const sources = await sourceController.findAll()
-        //console.log(sources)
-        res.render('sourcesAll', { sources: sources });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+        else if(checkUser.admin == "admin"){
+            const sources = await sourceController.findAll()
+            //console.log(sources)
+            res.render('sourcesAll', { loggedUser: req.user,  sources: sources });
+        }
     }
 });
 
 // GET create source
-router.get('/create-source', function(req, res, next) {
-    res.render('sourcesCreate');
+router.get('/create-source', async function(req, res, next) {
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+        else if(checkUser.admin == "admin"){
+            res.render('sourcesCreate', { loggedUser: req.user});
+        }
+    }
 });
 
 // POST create source
@@ -41,42 +75,71 @@ router.post('/create-source',
     body('type').trim().notEmpty().withMessage('The type cannot be empty!'),
     body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
     async function(req, res, next){
-        const result = validationResult(req);
-        //console.log(req.body)
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
 
-        if(result.isEmpty() != true){
-            res.render('sourcesCreate', { error: result.array() })
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
-        else{
-            try {
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            //console.log(req.body)
+    
+            if(result.isEmpty() != true){
+                res.render('sourcesCreate', { error: result.array() })
+            }
+
+            else{
                 await sourceController.create(req.body)
                 res.redirect('/admin/all-sources')
-            } catch (error) {
-                console.log(error)
-                res.redirect('/error')
             }
         }
+    }
 });
 
 // GET view source
 router.get('/view-source/:id', async function(req, res, next) {
-    try {
-        const source = await sourceController.findByID(req.params.id)
-        res.render('sourcesSingle', { source: source });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
-    }
+        // Check if user is admin
+        if(!req.isAuthenticated()){
+            return res.redirect('/login')
+        }
+
+        else if(req.isAuthenticated()){
+            const checkUser = await accountController.findByID(req.user.id)
+            if(checkUser.admin != "admin"){
+                return res.redirect('/error/permission')
+            }
+
+            else if(checkUser.admin == "admin"){
+                const source = await sourceController.findByID(req.params.id)
+                res.render('sourcesSingle', { loggedUser: req.user,  source: source });
+            }
+        }
+
 });
 
 // GET edit source
 router.get('/edit-source/:id', async function(req, res, next) {
-    try {
-        const source = await sourceController.findByID(req.params.id)
-        res.render('sourcesUpdate', { source: source });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const source = await sourceController.findByID(req.params.id)
+            res.render('sourcesUpdate', { loggedUser: req.user,  source: source });
+        }
     }
 });
 
@@ -86,59 +149,87 @@ router.post('/edit-source/:id',
     body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
     body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
     async function(req, res, next){
-        const result = validationResult(req);
-        console.log(req.body)
-        //console.log(result)
-        if(result.isEmpty() != true){
-            const source = await sourceController.findByID(req.params.id)
-            res.render('sourcesUpdate', { source: source, error: result.array() })
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
-        else{
-        try {
-            await sourceController.update(req.params.id, req.body)
-            res.redirect('/admin/all-sources')
-        } catch (error) {
-            console.log(error)
-            res.redirect('/error')
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            console.log(req.body)
+            //console.log(result)
+            if(result.isEmpty() != true){
+                const source = await sourceController.findByID(req.params.id)
+                res.render('sourcesUpdate', { loggedUser: req.user,  source: source, error: result.array() })
+            }
+
+            else{
+                await sourceController.update(req.params.id, req.body)
+                res.redirect('/admin/all-sources')
+            }
         }
-        }
+    }
 });
 
 
 // GET delete source
 router.get('/delete-source/:id', async function(req, res, next) {
-    try {
-        const source = await sourceController.findByID(req.params.id)
-        res.render('sourcesDelete', { source: source });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const source = await sourceController.findByID(req.params.id)
+            res.render('sourcesDelete', { loggedUser: req.user,  source: source });
+        }
     }
 });
 
 // POST delete source
 router.post('/delete-source/:id', async function(req, res, next){
-    //console.log(req.body)
-    //console.log(result)
-    try {
-        const source = await sourceController.findByID(req.params.id)
-        const items = await itemController.findBySource(source.name)
-        //console.log(items)
-        if(items.length > 0){
-            const error = []
-            let errorMessage = JSON.parse('{"msg":"There are still items tied to this source!"}')
-            error.push(errorMessage)
-            //console.log(error)
-            res.render('sourcesDelete', {source: source, error: error, items: items})
-        }
-        else{
-            await sourceController.deleteByID(req.params.id)
-            res.redirect('/admin/all-sources')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
 
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+        else if(checkUser.admin == "admin"){
+            //console.log(req.body)
+            //console.log(result)
+            const source = await sourceController.findByID(req.params.id)
+            const items = await itemController.findBySource(source.name)
+            //console.log(items)
+            if(items.length > 0){
+                const error = []
+                let errorMessage = JSON.parse('{"msg":"There are still items tied to this source!"}')
+                error.push(errorMessage)
+                //console.log(error)
+                res.render('sourcesDelete', { loggedUser: req.user, source: source, error: error, items: items})
+            }
+            
+            else{
+                await sourceController.deleteByID(req.params.id)
+                res.redirect('/admin/all-sources')
+            }
+        }
     }
 });
 
@@ -158,20 +249,43 @@ const Rarity = {
 
 // GET all items
 router.get('/all-items', async function(req, res, next) {
-    try {
-        const items = await itemController.findAll()
-        //console.log(items)
-        res.render('itemsAll', { items: items });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
-    }
+        // Check if user is admin
+        if(!req.isAuthenticated()){
+            return res.redirect('/login')
+        }
+
+        else if(req.isAuthenticated()){
+            const checkUser = await accountController.findByID(req.user.id)
+            if(checkUser.admin != "admin"){
+                return res.redirect('/error/permission')
+            }
+
+            else if(checkUser.admin == "admin"){
+                const items = await itemController.findAll()
+                //console.log(items)
+                res.render('itemsAll', { loggedUser: req.user,  items: items });
+            }
+        }
 });
 
 // GET create item
 router.get('/create-item', async function(req, res, next) {
-    const sourceList = await sourceController.findAll()
-    res.render('itemsCreate', {rarityList: Object.keys(Rarity), sourceList: sourceList});
+        // Check if user is admin
+        if(!req.isAuthenticated()){
+            return res.redirect('/login')
+        }
+
+        else if(req.isAuthenticated()){
+            const checkUser = await accountController.findByID(req.user.id)
+            if(checkUser.admin != "admin"){
+                return res.redirect('/error/permission')
+            }
+
+            else if(checkUser.admin == "admin"){
+                const sourceList = await sourceController.findAll()
+                res.render('itemsCreate', { loggedUser: req.user, rarityList: Object.keys(Rarity), sourceList: sourceList});
+            }
+        }
 });
 
 // POST create item
@@ -193,44 +307,72 @@ router.post('/create-item',
         }
     }).withMessage("That source does not exist, please double check your input."),
     async function(req, res, next){
-        const result = validationResult(req);
-        console.log(result)
-        if(result.isEmpty() != true){
-            const sourceList = await sourceController.findAll()
-            res.render('itemsCreate', { rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+    
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
-        else{
-            try {
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            console.log(result)
+            if(result.isEmpty() != true){
+                const sourceList = await sourceController.findAll()
+                res.render('itemsCreate', { loggedUser: req.user,  rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
+            }
+
+            else{
                 const source = await sourceController.findByName(req.body.source)
                 await itemController.create(req.body, source)
                 res.redirect('/admin/all-items')
-            } catch (error) {
-                console.log(error)
-                res.redirect('/error')
             }
         }
+    }
 });
 
 // GET view item
 router.get('/view-item/:id', async function(req, res, next) {
-    try {
-        const item = await itemController.findByID(req.params.id)
-        res.render('itemsSingle', { item: item });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const item = await itemController.findByID(req.params.id)
+            res.render('itemsSingle', { loggedUser: req.user,  item: item });
+        }
     }
 });
 
 // GET edit item
 router.get('/edit-item/:id', async function(req, res, next) {
-    try {
-        const item = await itemController.findByID(req.params.id)
-        const sourceList = await sourceController.findAll()
-        res.render('itemsUpdate', { item: item, rarityList: Object.keys(Rarity), sourceList: sourceList });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const item = await itemController.findByID(req.params.id)
+            const sourceList = await sourceController.findAll()
+            res.render('itemsUpdate', { loggedUser: req.user,  item: item, rarityList: Object.keys(Rarity), sourceList: sourceList });
+        }
     }
 });
 
@@ -253,47 +395,75 @@ router.post('/edit-item/:id',
         }
     }).withMessage("That source does not exist, please double check your input."),
     async function(req, res, next){
-        const result = validationResult(req);
-        console.log(req.body)
-        console.log(result)
-        if(result.isEmpty() != true){
-            const item = await itemController.findByID(req.params.id)
-            const sourceList = await sourceController.findAll()
-            res.render('itemsUpdate', {  item: item, rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
-        else{
-        try {
-            const source = await sourceController.findByName(req.body.source)
-            await itemController.update(req.params.id, req.body, source)
-            res.redirect('/admin/all-items')
-        } catch (error) {
-            console.log(error)
-            res.redirect('/error')
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            console.log(req.body)
+            console.log(result)
+            if(result.isEmpty() != true){
+                const item = await itemController.findByID(req.params.id)
+                const sourceList = await sourceController.findAll()
+                res.render('itemsUpdate', { loggedUser: req.user,   item: item, rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
+            }
+
+            else{
+                const source = await sourceController.findByName(req.body.source)
+                await itemController.update(req.params.id, req.body, source)
+                res.redirect('/admin/all-items')
+            }
         }
-        }
+    }
 });
 
 // GET delete item
 router.get('/delete-item/:id', async function(req, res, next) {
-    try {
-        const item = await itemController.findByID(req.params.id)
-        res.render('itemsDelete', { item: item });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+    
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const item = await itemController.findByID(req.params.id)
+            res.render('itemsDelete', { loggedUser: req.user,  item: item });
+        }
     }
 });
 
 // POST delete item
 router.post('/delete-item/:id', async function(req, res, next){
-    console.log(req.body)
-    //console.log(result)
-    try {
-        await itemController.deleteByID(req.params.id)
-        res.redirect('/admin/all-items')
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            console.log(req.body)
+            //console.log(result)
+            await itemController.deleteByID(req.params.id)
+            res.redirect('/admin/all-items')
+        }
     }
 });
 
@@ -307,35 +477,62 @@ router.post('/delete-item/:id', async function(req, res, next){
 
 // GET all users
 router.get('/all-users', async function(req, res, next) {
-    try {
-        const users = await accountController.findAll()
-        //console.log(users)
-        res.render('usersAll', { users: users });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const users = await accountController.findAll()
+            //console.log(users)
+            res.render('usersAll', { loggedUser: req.user,  users: users });
+        }
     }
 });
 
 // GET view user
 router.get('/view-user/:id', async function(req, res, next) {
-    try {
-        const user = await accountController.findByID(req.params.id)
-        res.render('usersSingle', { user: user });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersSingle', { loggedUser: req.user,  user: user });
+        }
     }
 });
 
 // GET edit user
 router.get('/edit-user/:id', async function(req, res, next) {
-    try {
-        const user = await accountController.findByID(req.params.id)
-        res.render('usersUpdate', { user: user });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersUpdate', { loggedUser: req.user,  user: user });
+        }
     }
 });
 
@@ -345,70 +542,107 @@ router.post('/edit-user/:id',
     body('firstName').trim().notEmpty().withMessage('First name cannot be empty!'),
     body('lastName').trim().notEmpty().withMessage('Last name cannot be empty!'),
     async function(req, res, next){
-        const result = validationResult(req);
-        console.log(req.body)
-        //console.log(result)
-        if(result.isEmpty() != true){
-            const user = await accountController.findByID(req.params.id)
-            res.render('usersUpdate', { user: user, error: result.array() })
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
-        else{
-        try {
-            await accountController.update(req.params.id, req.body)
-            res.redirect('/admin/all-users')
-        } catch (error) {
-            console.log(error)
-            res.redirect('/error')
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            console.log(req.body)
+            //console.log(result)
+            if(result.isEmpty() != true){
+                const user = await accountController.findByID(req.params.id)
+                res.render('usersUpdate', { loggedUser: req.user,  user: user, error: result.array() })
+            }
+
+            else{
+                await accountController.update(req.params.id, req.body)
+                res.redirect('/admin/all-users')
+            }
         }
-        }
+    }
 });
 
 
 // GET delete user
 router.get('/delete-user/:id', async function(req, res, next) {
-    try {
-        const user = await accountController.findByID(req.params.id)
-        res.render('usersDelete', { user: user });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersDelete', { loggedUser: req.user,  user: user });
+        }
     }
 });
 
 // POST delete user
 router.post('/delete-user/:id', async function(req, res, next){
-    //console.log(req.body)
-    //console.log(result)
-    try {
-        const user = await accountController.findByID(req.params.id)
-        //console.log(user)
-        if(user.admin == "admin"){
-            const error = []
-            let errorMessage = JSON.parse('{"msg":"This user is an admin! Remove their admin first so they can be deleted."}')
-            error.push(errorMessage)
-            //console.log(error)
-            res.render('usersDelete', {user: user, error: error})
-        }
-        else{
-            await accountController.deleteByID(req.params.id)
-            res.redirect('/admin/all-users')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
         }
 
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+        else if(checkUser.admin == "admin"){
+            const user = await accountController.findByID(req.params.id)
+            //console.log(user)
+            if(user.admin == "admin"){
+                const error = []
+                let errorMessage = JSON.parse('{"msg":"This user is an admin! Remove their admin first so they can be deleted."}')
+                error.push(errorMessage)
+                //console.log(error)
+                res.render('usersDelete', { loggedUser: req.user, user: user, error: error})
+            }
+
+            else{
+                await accountController.deleteByID(req.params.id)
+                res.redirect('/admin/all-users')
+            }
+        }
     }
 });
 
 // GET change user password
 router.get('/change-user-password/:id', async function(req, res, next) {
-    try {
-        const user = await accountController.findByID(req.params.id)
-        res.render('usersPassword', { user: user });
-    } catch (error) {
-        console.log(error)
-        res.redirect('/error')
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
     }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+
+        else if(checkUser.admin == "admin"){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersPassword', { loggedUser: req.user,  user: user });
+        }
+    }
+
+
 });
 
 // POST change user password
@@ -416,25 +650,36 @@ router.post('/change-user-password/:id',
     body('password').trim().notEmpty().withMessage('The new password cannot be empty!'),
     body('password').trim().isLength({min:8}).withMessage('Password must be at least 8 characters!'),
     async function(req, res, next){
-        const result = validationResult(req);
-        //console.log(req.body)
-        console.log(result)
-        if(result.isEmpty() != true){
-            const user = await accountController.findByID(req.params.id)
-            res.render('usersPassword', { user: user, error: result.array() })
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            
+            return res.redirect('/error/permission')
         }
-        else{
-        try {
-            const user = await accountController.findByID(req.params.id)
-            const newPassword = crypto.pbkdf2Sync(req.body.password, user.salt, 1000000, 64, 'sha512').toString('hex')
-            console.log(newPassword)
-            await accountController.changePassword(req.params.id, newPassword)
-            res.redirect('/admin/all-users')
-        } catch (error) {
-            console.log(error)
-            res.redirect('/error')
+
+        else if(checkUser.admin == "admin"){
+            const result = validationResult(req);
+            //console.log(req.body)
+            console.log(result)
+            if(result.isEmpty() != true){
+                const user = await accountController.findByID(req.params.id)
+                res.render('usersPassword', { loggedUser: req.user,  user: user, error: result.array() })
+            }
+            
+            else{
+                const user = await accountController.findByID(req.params.id)
+                const newPassword = crypto.pbkdf2Sync(req.body.password, user.salt, 1000000, 64, 'sha512').toString('hex')
+                console.log(newPassword)
+                await accountController.changePassword(req.params.id, newPassword)
+                res.redirect('/admin/all-users')
+            }
         }
-        }
+    }
 });
 
 module.exports = router;

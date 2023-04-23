@@ -641,8 +641,6 @@ router.get('/change-user-password/:id', async function(req, res, next) {
             res.render('usersPassword', { loggedUser: req.user,  user: user });
         }
     }
-
-
 });
 
 // POST change user password
@@ -658,7 +656,6 @@ router.post('/change-user-password/:id',
     else if(req.isAuthenticated()){
         const checkUser = await accountController.findByID(req.user.id)
         if(checkUser.admin != "admin"){
-            
             return res.redirect('/error/permission')
         }
 
@@ -670,7 +667,7 @@ router.post('/change-user-password/:id',
                 const user = await accountController.findByID(req.params.id)
                 res.render('usersPassword', { loggedUser: req.user,  user: user, error: result.array() })
             }
-            
+
             else{
                 const user = await accountController.findByID(req.params.id)
                 const newPassword = crypto.pbkdf2Sync(req.body.password, user.salt, 1000000, 64, 'sha512').toString('hex')

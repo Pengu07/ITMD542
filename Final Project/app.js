@@ -34,7 +34,7 @@ app.use(sessions({
 app.use(passport.authenticate('session'))
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/login', authRouter);
 app.use('/home', homeRouter);
 app.use('/admin', adminRouter);

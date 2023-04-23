@@ -195,4 +195,11 @@ router.get('/newAccount', function(req, res, next) {
     res.render('login', { signup: 'success'});
 });
 
+/* GET login page when new account created */
+router.get('/signout', function(req, res, next) {
+    req.logOut(function(){
+        res.redirect('/');
+    })
+});
+
 module.exports = router;

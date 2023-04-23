@@ -8,7 +8,17 @@ block content
     
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
         .container-fluid
-            img.mx-2(src='https://github.com/pengu07.png' alt='' width='36' height='36')
+            .dropdown
+                a.d-flex.align-items-center.text-white.text-decoration-none.dropdown-toggle.mx-2(href="#"  data-bs-toggle="dropdown" aria-expanded="false")
+                    img(src='https://github.com/pengu07.png' alt='' width='36' height='36')
+                ul.dropdown-menu.dropdown-menu-dark.text-small.shadow.mx-2
+                    li
+                        a.dropdown-item(href=`/user/change-password/${loggedUser.id}`) Change Password
+                    li
+                        hr.dropdown-divider
+                    li
+                        a.dropdown-item(href="/signout") Sign out
+                        
             button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation")
                 span.navbar-toggler-icon
             

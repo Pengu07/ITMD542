@@ -9,7 +9,7 @@ var crypto = require ('crypto')
 async function loginUser(username, password, done){
     try {
         // Try to find the user with the given username
-        const user = await accountsController.findByUsername(username);
+        const user = await accountsController.findByUsername(username.toLowerCase());
         // Check if user exists or not
         if(user){
             // Check if passwords match
@@ -69,10 +69,18 @@ router.get('/', function(req, res, next) {
 /* POST login page */
 /* Authenticates login using passports local strategy */
 router.post('/', passport.authenticate('local', {
-    successRedirect: '/home',
     failureRedirect: '/login',
     failureMessage: true
-}));
+    }),
+    async function(req, res, next) {
+        if(req.user.admin == 'n'){
+            res.redirect('/home')
+        }
+        if(req.user.admin =='admin'){
+            res.redirect('/admin')
+        }
+    }
+);
                           
 /* GET signup page */
 router.get('/signup', function(req, res, next) {
@@ -169,10 +177,11 @@ router.post('/signup',
             // security. This is set in the accounts database
             let salt = crypto.randomBytes(32).toString('hex')
             let encryptedPassword = crypto.pbkdf2Sync(req.body.password, salt, 1000000, 64, 'sha512').toString('hex')
+            editedUsername = req.body.username
             await accountsController.create({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
-                username: req.body.username,
+                username: editedUsername.toLowerCase(),
                 password: encryptedPassword,
                 salt: salt
             })

@@ -48,10 +48,11 @@ block content
                             tr
                                 td= value.name
                                 td= value.rarity
+                                td= value.sourceName
                                 if value.type == 'enemy'
-                                    td= `Enemy level: ${value.level}`
+                                    td= `Enemy level: ${value.sourceLevel}`
                                 if value.type == 'chest'
-                                    td= `Chest level: ${value.level}`
+                                    td= `Chest level: ${value.sourceLevel}`
                                 td
                                     .btn-group
                                         a.btn.btn-primary(href=`/admin/view-item/${value._id}`)= 'View'

@@ -96,6 +96,7 @@ router.post('/signup',
         }
         // If there were errors, generate the validation checks. This also checks that the password and confirmed password
         // are the same
+        // The reason I did it this way was so I could make the form update on error and stylize it differently
         if(result.isEmpty() != true || req.body.password != req.body.confirmPassword || exists == 1){
             const results = result.array()
             const updatedResults = []

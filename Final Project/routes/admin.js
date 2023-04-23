@@ -132,6 +132,14 @@ router.post('/delete-source/:id', async function(req, res, next){
 
 */
 
+const Rarity = {
+    Common: "Common",
+    Uncommon: "Uncommon",
+    Rare: "Rare",
+    Epic: "Epic",
+    Legendary: "Legendary"
+}
+
 // GET all items
 router.get('/all-items', async function(req, res, next) {
     try {
@@ -145,26 +153,40 @@ router.get('/all-items', async function(req, res, next) {
 });
 
 // GET create item
-router.get('/create-item', function(req, res, next) {
-    res.render('itemsCreate');
+router.get('/create-item', async function(req, res, next) {
+    const sourceList = await sourceController.findAll()
+    res.render('itemsCreate', {rarityList: Object.keys(Rarity), sourceList: sourceList});
 });
 
 // POST create item
 router.post('/create-item',
     body('itemName').trim().notEmpty().withMessage('Name cannot be empty!'),
-    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
-    body('type').trim().notEmpty().withMessage('The type cannot be empty!'),
-    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
+    body('rarity').trim().notEmpty().withMessage('Rarity cannot be empty!'),
+    body('rarity').custom(value => {
+        return Object.keys(Rarity).includes(value)
+    }).withMessage("That is not a possible item rarity!"),
+    body('source').trim().notEmpty().withMessage('The source cannot be empty!'),
+    body('source').custom(async value =>{
+        try {
+            if(await sourceController.findByName(value) == null){
+                throw new Error("That source does not exist, please double check your input.")
+            }
+        } catch (error) {
+            console.log(error)
+            res.redirect('/error')
+        }
+    }).withMessage("That source does not exist, please double check your input."),
     async function(req, res, next){
         const result = validationResult(req);
-        //console.log(req.body)
-
+        console.log(result)
         if(result.isEmpty() != true){
-            res.render('itemsCreate', { error: result.array() })
+            const sourceList = await sourceController.findAll()
+            res.render('itemsCreate', { rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
         }
         else{
             try {
-                await itemController.create(req.body)
+                const source = await sourceController.findByName(req.body.source)
+                await itemController.create(req.body, source)
                 res.redirect('/admin/all-items')
             } catch (error) {
                 console.log(error)

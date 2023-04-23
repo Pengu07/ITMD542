@@ -20,11 +20,13 @@ const itemOperations = {
     findAll: async () => await col.find().toArray(),
     findByID: async (id) => await col.findOne({ id: id }),
     findByName: async (name) => await col.findOne({ name: name }),
-    create: async (item) => {
+    create: async (item, source) => {
         const newItem = {
-            name: item.name,
+            name: item.itemName,
             rarity: item.rarity,
-            source: item.source
+            sourceName: source.name,
+            type: source.type,
+            sourceLevel: source.level
         };
 
         await col.insertOne(newItem);
@@ -32,7 +34,7 @@ const itemOperations = {
     deleteByID: async (id) => await col.deleteOne({ id: id }),
     update: async (item) => {
         await col.updateOne({id: item.id}, { $set: { 
-            name: item.name,
+            name: item.itemName,
             rarity: item.rarity,
             source: item.source
         }});

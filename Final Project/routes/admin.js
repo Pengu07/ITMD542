@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var sourceController = require('../sources/sourceController')
 var itemController = require('../item/itemController')
+var accountController = require('../account/accountController')
 const { body, validationResult } = require ('express-validator');
 
 /* GET admin page. */
@@ -296,7 +297,136 @@ router.post('/delete-item/:id', async function(req, res, next){
 });
 
 
+/*
+
+    This portion of the router is dedicated to the user pages
+
+*/
 
 
+// GET all users
+router.get('/all-users', async function(req, res, next) {
+    try {
+        const users = await accountController.findAll()
+        //console.log(users)
+        res.render('usersAll', { users: users });
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
+
+// GET create user
+router.get('/create-user', function(req, res, next) {
+    res.render('usersCreate');
+});
+
+// POST create user
+router.post('/create-user',
+    body('userName').trim().notEmpty().withMessage('Name cannot be empty!'),
+    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
+    body('type').trim().notEmpty().withMessage('The type cannot be empty!'),
+    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
+    async function(req, res, next){
+        const result = validationResult(req);
+        //console.log(req.body)
+
+        if(result.isEmpty() != true){
+            res.render('usersCreate', { error: result.array() })
+        }
+        else{
+            try {
+                await accountController.create(req.body)
+                res.redirect('/admin/all-users')
+            } catch (error) {
+                console.log(error)
+                res.redirect('/error')
+            }
+        }
+});
+
+// GET view user
+router.get('/view-user/:id', async function(req, res, next) {
+    try {
+        const user = await accountController.findByID(req.params.id)
+        res.render('usersSingle', { user: user });
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
+
+// GET edit user
+router.get('/edit-user/:id', async function(req, res, next) {
+    try {
+        const user = await accountController.findByID(req.params.id)
+        res.render('usersUpdate', { user: user });
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
+
+// POST edit user
+router.post('/edit-user/:id',
+    body('userName').trim().notEmpty().withMessage('Name cannot be empty!'),
+    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
+    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
+    async function(req, res, next){
+        const result = validationResult(req);
+        console.log(req.body)
+        //console.log(result)
+        if(result.isEmpty() != true){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersUpdate', { user: user, error: result.array() })
+        }
+        else{
+        try {
+            await accountController.update(req.params.id, req.body)
+            res.redirect('/admin/all-users')
+        } catch (error) {
+            console.log(error)
+            res.redirect('/error')
+        }
+        }
+});
+
+
+// GET delete user
+router.get('/delete-user/:id', async function(req, res, next) {
+    try {
+        const user = await accountController.findByID(req.params.id)
+        res.render('usersDelete', { user: user });
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
+
+// POST delete user
+router.post('/delete-user/:id', async function(req, res, next){
+    //console.log(req.body)
+    //console.log(result)
+    try {
+        const user = await accountController.findByID(req.params.id)
+        const items = await itemController.findByuser(user.name)
+        //console.log(items)
+        if(items.length > 0){
+            const error = []
+            let errorMessage = JSON.parse('{"msg":"There are still items tied to this user!"}')
+            error.push(errorMessage)
+            //console.log(error)
+            res.render('usersDelete', {user: user, error: error, items: items})
+        }
+        else{
+            await accountController.deleteByID(req.params.id)
+            res.redirect('/admin/all-users')
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
 
 module.exports = router;

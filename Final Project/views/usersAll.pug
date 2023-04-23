@@ -21,11 +21,12 @@ block content
                     a.nav-link(href="/admin/all-items") Items
                     
                     li.nav-item
-                    a.nav-link.active(aria-current="page", href="/admin/all-sources") Item Sources
-                
+                    a.nav-link(aria-current="page", href="/admin/all-sources") Item Sources
+
                     li.nav-item
-                    a.nav-link(aria-current="page", href="/admin/all-users") Users
-                    
+                    a.nav-link.active(aria-current="page", href="/admin/all-users") Users
+                
+            
                 form.d-flex(role="search")
                     input.form-control.me-2(type="search" placeholder="Search" aria-label="Search")
                     button.btn.btn-outline-success(type="submitSearch") Search
@@ -33,32 +34,29 @@ block content
     
     main.container
         .bg-body-tertiary.p-5.rounded
-            h1 Item Sources
-            p.lead List of all possible item sources
-            a(href="/admin/create-source")
-                button.btn.btn-success.createBtn.mb-1 Create new source!
-            if sources.length > 0
+            h1 All Users
+            p.lead List of all current users 
+            a(href="/admin/create-item")
+                //button.btn.btn-success.createBtn.mb-1 Create new user!
+            if users.length > 0
                 table.table.table-hover.table-dark.table-striped.table-bordered
                     thead
                         tr
-                            th(scope="col") Name
-                            th(scope="col") Location
-                            th(scope="col") Type
+                            th(scope="col") Username
+                            th(scope="col") First name
+                            th(scope="col") Last name
                             th(scope="col") Actions
                     tbody
-                        each value in sources
+                        each value in users
                             tr
-                                td= value.name
-                                td= value.location
-                                if value.type == 'enemy'
-                                    td= `Enemy level: ${value.level}`
-                                if value.type == 'chest'
-                                    td= `Chest level: ${value.level}`
+                                td= value.username
+                                td= value.firstName
+                                td= value.lastName
                                 td
                                     .btn-group
-                                        a.btn.btn-primary(href=`/admin/view-source/${value._id}`)= 'View'
-                                        a.btn.btn-secondary(href=`/admin/edit-source/${value._id}`)= 'Edit'
-                                        a.btn.btn-danger(href=`/admin/delete-source/${value._id}`)= 'Delete'
+                                        a.btn.btn-primary(href=`/admin/view-item/${value._id}`)= 'View'
+                                        a.btn.btn-secondary(href=`/admin/edit-item/${value._id}`)= 'Edit'
+                                        a.btn.btn-danger(href=`/admin/delete-item/${value._id}`)= 'Delete'
 
 
 

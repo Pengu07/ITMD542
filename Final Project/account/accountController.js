@@ -17,15 +17,19 @@ const accountOperations = {
             lastName: account.lastName,
             username: account.username,
             password: account.password,
-            salt: account.salt
+            salt: account.salt,
+            admin: 'n'
         };
 
         await col.insertOne(newAccount);
     },
     deleteByID: async (id) => await col.deleteOne({ _id: new ObjectId(id) }),
-    update: async (account) => {
+    update: async (id, account) => {
         await col.updateOne({_id: new ObjectId(id)}, { $set: { 
-            password: account.password
+            firstName: account.firstName,
+            lastName: account.lastName,
+            username: account.username,
+            admin: account.admin
         }});
     },
 }

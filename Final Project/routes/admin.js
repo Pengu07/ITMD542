@@ -316,35 +316,6 @@ router.get('/all-users', async function(req, res, next) {
     }
 });
 
-// GET create user
-router.get('/create-user', function(req, res, next) {
-    res.render('usersCreate');
-});
-
-// POST create user
-router.post('/create-user',
-    body('userName').trim().notEmpty().withMessage('Name cannot be empty!'),
-    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
-    body('type').trim().notEmpty().withMessage('The type cannot be empty!'),
-    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
-    async function(req, res, next){
-        const result = validationResult(req);
-        //console.log(req.body)
-
-        if(result.isEmpty() != true){
-            res.render('usersCreate', { error: result.array() })
-        }
-        else{
-            try {
-                await accountController.create(req.body)
-                res.redirect('/admin/all-users')
-            } catch (error) {
-                console.log(error)
-                res.redirect('/error')
-            }
-        }
-});
-
 // GET view user
 router.get('/view-user/:id', async function(req, res, next) {
     try {
@@ -369,9 +340,9 @@ router.get('/edit-user/:id', async function(req, res, next) {
 
 // POST edit user
 router.post('/edit-user/:id',
-    body('userName').trim().notEmpty().withMessage('Name cannot be empty!'),
-    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
-    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
+    body('username').trim().notEmpty().withMessage('Username cannot be empty!'),
+    body('firstName').trim().notEmpty().withMessage('First name cannot be empty!'),
+    body('lastName').trim().notEmpty().withMessage('Last name cannot be empty!'),
     async function(req, res, next){
         const result = validationResult(req);
         console.log(req.body)
@@ -409,14 +380,13 @@ router.post('/delete-user/:id', async function(req, res, next){
     //console.log(result)
     try {
         const user = await accountController.findByID(req.params.id)
-        const items = await itemController.findByuser(user.name)
-        //console.log(items)
-        if(items.length > 0){
+        //console.log(user)
+        if(user.admin == "admin"){
             const error = []
-            let errorMessage = JSON.parse('{"msg":"There are still items tied to this user!"}')
+            let errorMessage = JSON.parse('{"msg":"This user is an admin! Remove their admin first so they can be deleted."}')
             error.push(errorMessage)
             //console.log(error)
-            res.render('usersDelete', {user: user, error: error, items: items})
+            res.render('usersDelete', {user: user, error: error})
         }
         else{
             await accountController.deleteByID(req.params.id)

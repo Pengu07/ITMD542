@@ -1,0 +1,72 @@
+extends layout
+
+block customcss
+    link(rel='stylesheet', href='/stylesheets/home.css')
+
+block content
+    
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+        .container-fluid
+            img.mx-2(src='https://github.com/pengu07.png' alt='' width='36' height='36')
+            button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation")
+                span.navbar-toggler-icon
+            
+            .collapse.navbar-collapse(id="navbarCollapse")
+                ul.navbar-nav.me-auto.mb-2.mb-md-0
+                    li.nav-item
+                    a.nav-link(href="/admin") Home
+                    
+                    li.nav-item
+                    a.nav-link(href="/admin/all-items") Items
+                    
+                    li.nav-item
+                    a.nav-link(href="/admin/all-sources") Item Sources
+                
+                    li.nav-item
+                    a.nav-link(aria-current="page", href="/admin/all-users") Users
+                    
+                form.d-flex(role="search")
+                    input.form-control.me-2(type="search" placeholder="Search" aria-label="Search")
+                    button.btn.btn-outline-success(type="submitSearch") Search
+
+    
+    main.container
+        .bg-body-tertiary.p-5.rounded
+            h3.text-center Deleting a single user
+            p.lead The hashed password is hidden for security.
+            if error
+                .alert.alert-danger
+                    p This user is labeled as an admin!
+                    p To delete them they must first have their admin role revoked.
+            form(method='POST', action=`/admin/delete-user/${user._id}`)
+                .row.g-3
+                    .col-12
+                        label.form-label.form-label(for="userName") Username
+                        input.form-control(type="text", name="userName", id="userName", placeholder="Name of User", readonly, disabled, value=user.username)
+
+                    .col-sm-6
+                        label.form-label.form-label(for="firstName") First name
+                        input.form-control(type="text", name="firstName", id="firstName", placeholder="Example", readonly, disabled, value=user.firstName)
+
+                    .col-sm-6
+                        label.form-label(for="lastName") Last name
+                        input.form-control(type="text", name="lastName", id="lastName", placeholder="Name", readonly, disabled, value=user.lastName)
+
+                    .col-12
+                        .form-check
+                            label.form-check-label(for="admin") Admin Role
+                            if user.admin == 'admin'
+                                input.form-check-input(type="checkbox", name="admin", id="admin", value="admin", checked, disabled, readonly)
+                            else
+                                input.form-check-input(type="checkbox", name="admin", id="admin", value="admin", disabled, readonly)
+
+                    hr.my-4
+
+                
+                    .col-6
+                        button.w-100.btn.btn-danger.btn-md.text-center(type="submit") Delete user
+                    .col-6
+                        a.w-100.btn.btn-primary.btn-md(href='/admin/all-users') Cancel
+
+
+

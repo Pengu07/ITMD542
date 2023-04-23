@@ -11,6 +11,7 @@ const itemOperations = {
     findAll: async () => await col.find().toArray(),
     findByID: async (id) => await col.findOne({ _id: new ObjectId(id)}),
     findByName: async (name) => await col.findOne({ name: name }),
+    findBySource: async (sourceName) => await col.find({ sourceName: sourceName }).toArray(),
     create: async (item, source) => {
         const newItem = {
             name: item.itemName,

@@ -114,13 +114,26 @@ router.get('/delete-source/:id', async function(req, res, next) {
     }
 });
 
-// POST edit source
+// POST delete source
 router.post('/delete-source/:id', async function(req, res, next){
-    console.log(req.body)
+    //console.log(req.body)
     //console.log(result)
     try {
-        await sourceController.deleteByID(req.params.id)
-        res.redirect('/admin/all-sources')
+        const source = await sourceController.findByID(req.params.id)
+        const items = await itemController.findBySource(source.name)
+        //console.log(items)
+        if(items.length > 0){
+            const error = []
+            let errorMessage = JSON.parse('{"msg":"There are still items tied to this source!"}')
+            error.push(errorMessage)
+            //console.log(error)
+            res.render('sourcesDelete', {source: source, error: error, items: items})
+        }
+        else{
+            await sourceController.deleteByID(req.params.id)
+            res.redirect('/admin/all-sources')
+        }
+
     } catch (error) {
         console.log(error)
         res.redirect('/error')
@@ -269,7 +282,7 @@ router.get('/delete-item/:id', async function(req, res, next) {
     }
 });
 
-// POST edit item
+// POST delete item
 router.post('/delete-item/:id', async function(req, res, next){
     console.log(req.body)
     //console.log(result)

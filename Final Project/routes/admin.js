@@ -88,7 +88,8 @@ router.post('/edit-source/:id',
         console.log(req.body)
         //console.log(result)
         if(result.isEmpty() != true){
-            res.render('sourcesUpdate', { error: result.array() })
+            const source = await sourceController.findByID(req.params.id)
+            res.render('sourcesUpdate', { source: source, error: result.array() })
         }
         else{
         try {
@@ -210,7 +211,8 @@ router.get('/view-item/:id', async function(req, res, next) {
 router.get('/edit-item/:id', async function(req, res, next) {
     try {
         const item = await itemController.findByID(req.params.id)
-        res.render('itemsUpdate', { item: item });
+        const sourceList = await sourceController.findAll()
+        res.render('itemsUpdate', { item: item, rarityList: Object.keys(Rarity), sourceList: sourceList });
     } catch (error) {
         console.log(error)
         res.redirect('/error')
@@ -220,18 +222,34 @@ router.get('/edit-item/:id', async function(req, res, next) {
 // POST edit item
 router.post('/edit-item/:id',
     body('itemName').trim().notEmpty().withMessage('Name cannot be empty!'),
-    body('location').trim().notEmpty().withMessage('Location cannot be empty!'),
-    body('level').trim().isInt({min: 1, max: 60}).withMessage('The level must be a number between 1 and 60!'),
+    body('rarity').trim().notEmpty().withMessage('Rarity cannot be empty!'),
+    body('rarity').custom(value => {
+        return Object.keys(Rarity).includes(value)
+    }).withMessage("That is not a possible item rarity!"),
+    body('source').trim().notEmpty().withMessage('The source cannot be empty!'),
+    body('source').custom(async value =>{
+        try {
+            if(await sourceController.findByName(value) == null){
+                throw new Error("That source does not exist, please double check your input.")
+            }
+        } catch (error) {
+            console.log(error)
+            res.redirect('/error')
+        }
+    }).withMessage("That source does not exist, please double check your input."),
     async function(req, res, next){
         const result = validationResult(req);
         console.log(req.body)
-        //console.log(result)
+        console.log(result)
         if(result.isEmpty() != true){
-            res.render('itemsUpdate', { error: result.array() })
+            const item = await itemController.findByID(req.params.id)
+            const sourceList = await sourceController.findAll()
+            res.render('itemsUpdate', {  item: item, rarityList: Object.keys(Rarity), sourceList: sourceList, error: result.array() })
         }
         else{
         try {
-            await itemController.update(req.params.id, req.body)
+            const source = await sourceController.findByName(req.body.source)
+            await itemController.update(req.params.id, req.body, source)
             res.redirect('/admin/all-items')
         } catch (error) {
             console.log(error)
@@ -239,7 +257,6 @@ router.post('/edit-item/:id',
         }
         }
 });
-
 
 // GET delete item
 router.get('/delete-item/:id', async function(req, res, next) {

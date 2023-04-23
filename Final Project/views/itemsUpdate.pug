@@ -30,35 +30,39 @@ block content
     
     main.container
         .bg-body-tertiary.p-5.rounded
-            h3.text-center Create a new item
+            h3.text-center Editing a single item source
             if error
                 .alert.alert-danger
                     each value in error
                         p=value.msg
-            form(method='POST', action='/admin/create-item', id="itemForm")
+            form(method='POST', action=`/admin/edit-item/${item._id}`)
                 .row.g-3
 
                     .col-12
                         label.form-label.form-label(for="itemName") Name
-                        input.form-control(type="text", name="itemName", id="itemName", placeholder="Name of Item", required)
+                        input.form-control(type="text", name="itemName", id="itemName", placeholder="Name of Item", required, value=item.name)
 
                     .col-12
                         label.form-label(for="rarity") Rarity
                         select.form-select(name="rarity")
                             each rarity in rarityList
-                                option=rarity
+                                if rarity == item.rarity
+                                    option(selected)=rarity
+                                else
+                                    option=rarity
 
                     .col-12
                         label.form-label(for="source") Item Source
-                        input.form-control(type="text", name="source", id="source", placeholder="Item Source", list="sources", required, autocomplete="off")
+                        input.form-control(type="text", name="source", id="source", placeholder="Item Source", list="sources", required, value=item.sourceName, autocomplete="off")
                         datalist(id="sources")
                             select(name="source", size="5", form="itemForm")
                                 each value in sourceList
                                     option=value.name
                     hr.my-4
 
+                
                     .col-6
-                        button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Create new item
+                        button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Update item source
                     .col-6
                         a.w-100.btn.btn-danger.btn-md(href='/admin/all-items') Cancel
 

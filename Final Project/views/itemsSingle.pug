@@ -30,37 +30,25 @@ block content
     
     main.container
         .bg-body-tertiary.p-5.rounded
-            h3.text-center Create a new item
-            if error
-                .alert.alert-danger
-                    each value in error
-                        p=value.msg
-            form(method='POST', action='/admin/create-item', id="itemForm")
+            h3.text-center Viewing a single item source
+            form
                 .row.g-3
-
                     .col-12
                         label.form-label.form-label(for="itemName") Name
-                        input.form-control(type="text", name="itemName", id="itemName", placeholder="Name of Item", required)
+                        input.form-control(type="text", name="itemName", id="itemName", placeholder="Name of Item", readonly, disabled, value=item.name)
 
                     .col-12
                         label.form-label(for="rarity") Rarity
-                        select.form-select(name="rarity")
-                            each rarity in rarityList
-                                option=rarity
+                        input.form-control(type="text", name="rarity", id="rarity", placeholder="Rarity of Item", readonly, disabled, value=item.rarity)
 
                     .col-12
                         label.form-label(for="source") Item Source
-                        input.form-control(type="text", name="source", id="source", placeholder="Item Source", list="sources", required, autocomplete="off")
-                        datalist(id="sources")
-                            select(name="source", size="5", form="itemForm")
-                                each value in sourceList
-                                    option=value.name
+                        input.form-control(type="text", name="source", id="source", placeholder="Item Source", list="sources", readonly, disabled, value=item.sourceName)
                     hr.my-4
 
-                    .col-6
-                        button.w-100.btn.btn-primary.btn-md.text-center(type="submit") Create new item
-                    .col-6
-                        a.w-100.btn.btn-danger.btn-md(href='/admin/all-items') Cancel
+                
+                    .text-center
+                        a.w-50.btn.btn-success.btn-md(href="/admin/all-items") Return
 
 
 

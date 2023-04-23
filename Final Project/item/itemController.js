@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const connection = process.env.CONNECTION;
 const dbName = process.env.DATABASE_NAME;
 const mongodb = new MongoClient(connection);
@@ -7,18 +7,9 @@ const database = mongodb.db(dbName);
 const collectionName = process.env.DATABASE_ITEMS;
 const col = database.collection(collectionName);
 
-const Rarity = {
-    Common: "Common",
-    Uncommon: "Uncommon",
-    Rare: "Rare",
-    Epic: "Epic",
-    Legendary: "Legendary"
-}
-
-
 const itemOperations = {
     findAll: async () => await col.find().toArray(),
-    findByID: async (id) => await col.findOne({ id: id }),
+    findByID: async (id) => await col.findOne({ _id: new ObjectId(id)}),
     findByName: async (name) => await col.findOne({ name: name }),
     create: async (item, source) => {
         const newItem = {
@@ -31,12 +22,14 @@ const itemOperations = {
 
         await col.insertOne(newItem);
     },
-    deleteByID: async (id) => await col.deleteOne({ id: id }),
-    update: async (item) => {
-        await col.updateOne({id: item.id}, { $set: { 
+    deleteByID: async (id) => await col.deleteOne({ _id: new ObjectId(id) }),
+    update: async (id, item, source) => {
+        await col.updateOne({_id: new ObjectId(id)}, { $set: { 
             name: item.itemName,
             rarity: item.rarity,
-            source: item.source
+            sourceName: source.name,
+            type: source.type,
+            sourceLevel: source.level
         }});
     },
 }

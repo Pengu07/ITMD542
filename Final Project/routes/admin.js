@@ -4,6 +4,7 @@ var sourceController = require('../sources/sourceController')
 var itemController = require('../item/itemController')
 var accountController = require('../account/accountController')
 const { body, validationResult } = require ('express-validator');
+var crypto = require ('crypto')
 
 /* GET admin page. */
 router.get('/', function(req, res, next) {
@@ -397,6 +398,43 @@ router.post('/delete-user/:id', async function(req, res, next){
         console.log(error)
         res.redirect('/error')
     }
+});
+
+// GET change user password
+router.get('/change-user-password/:id', async function(req, res, next) {
+    try {
+        const user = await accountController.findByID(req.params.id)
+        res.render('usersPassword', { user: user });
+    } catch (error) {
+        console.log(error)
+        res.redirect('/error')
+    }
+});
+
+// POST change user password
+router.post('/change-user-password/:id',
+    body('password').trim().notEmpty().withMessage('The new password cannot be empty!'),
+    body('password').trim().isLength({min:8}).withMessage('Password must be at least 8 characters!'),
+    async function(req, res, next){
+        const result = validationResult(req);
+        //console.log(req.body)
+        console.log(result)
+        if(result.isEmpty() != true){
+            const user = await accountController.findByID(req.params.id)
+            res.render('usersPassword', { user: user, error: result.array() })
+        }
+        else{
+        try {
+            const user = await accountController.findByID(req.params.id)
+            const newPassword = crypto.pbkdf2Sync(req.body.password, user.salt, 1000000, 64, 'sha512').toString('hex')
+            console.log(newPassword)
+            await accountController.changePassword(req.params.id, newPassword)
+            res.redirect('/admin/all-users')
+        } catch (error) {
+            console.log(error)
+            res.redirect('/error')
+        }
+        }
 });
 
 module.exports = router;

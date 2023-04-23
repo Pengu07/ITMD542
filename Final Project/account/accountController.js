@@ -32,6 +32,11 @@ const accountOperations = {
             admin: account.admin
         }});
     },
+    changePassword: async (id, password) => {
+        await col.updateOne({_id: new ObjectId(id)}, { $set: { 
+            password: password
+        }});
+    },
 }
 
 module.exports = accountOperations;

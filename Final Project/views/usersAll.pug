@@ -42,8 +42,11 @@ block content
             p.lead List of all current users 
             a(href="/admin/create-item")
                 //button.btn.btn-success.createBtn.mb-1 Create new user!
+            form.d-flex.w-50.float-right(role="search")
+                input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="userSearch()")
+                button.btn.btn-outline-success(type="submitSearch") Search
             if users.length > 0
-                table.table.table-hover.table-dark.table-striped.table-bordered
+                table.table.table-hover.table-dark.table-striped.table-bordered(id="table")
                     thead
                         tr
                             th(scope="col") Username
@@ -63,7 +66,8 @@ block content
                                         a.btn.btn-success(href=`/admin/change-user-password/${value._id}`)= 'Password'
                                         a.btn.btn-danger(href=`/admin/delete-user/${value._id}`)= 'Delete'
 
-
+block customScripts
+    script(src='/javascripts/search.js')
 
 
 

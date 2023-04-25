@@ -109,7 +109,7 @@ router.post('/create-source',
             //console.log(req.body)
     
             if(result.isEmpty() != true){
-                res.render('sourcesCreate', { error: result.array() })
+                res.render('sourcesCreate', { loggedUser: req.user, error: result.array() })
             }
 
             else{

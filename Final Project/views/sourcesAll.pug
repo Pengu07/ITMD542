@@ -40,9 +40,12 @@ block content
         .bg-body-tertiary.p-5.rounded
             h1 Item Sources
             p.lead List of all possible item sources
-            a(href="/admin/create-source")
-                button.btn.btn-success.createBtn.mb-1 Create new source!
-            input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="sourceSearch()")
+            .row
+                .col-6
+                    a(href="/admin/create-source")
+                        button.btn.btn-success.createBtn.mb-1 Create new source!
+                .col-6
+                    input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="sourceSearch()")
             if sources.length > 0
                 table.table.table-hover.table-dark.table-striped.table-bordered(id="table")
                     thead

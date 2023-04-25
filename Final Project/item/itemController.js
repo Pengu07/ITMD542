@@ -33,6 +33,12 @@ const itemOperations = {
             sourceLevel: source.level
         }});
     },
+    updateSource: async (id, source) => {
+        await col.updateOne({_id: new ObjectId(id)}, { $set: { 
+            sourceName: source.name,
+            sourceLevel: source.level
+        }});
+    },
 }
 
 module.exports = itemOperations;

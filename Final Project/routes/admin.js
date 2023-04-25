@@ -188,7 +188,18 @@ router.post('/edit-source/:id',
             }
 
             else{
+                const oldSource = await sourceController.findByID(req.params.id)
                 await sourceController.update(req.params.id, req.body)
+                const newSource = await sourceController.findByID(req.params.id)
+                const items = await itemController.findBySource(oldSource.name)
+                console.log()
+                //console.log(items)
+                if(items.length > 0){
+                    items.forEach(async item => {
+                        await itemController.updateSource(item._id.toHexString(), newSource)
+                    });
+                }
+                
                 res.redirect('/admin/all-sources')
             }
         }

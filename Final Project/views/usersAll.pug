@@ -38,11 +38,12 @@ block content
                 
     main.container
         .bg-body-tertiary.p-5.rounded
-            h1 All Users
-            p.lead List of all current users
             .row
                 .col-6
-                .col-6
+                    h1 All Users
+                    p.lead List of all current users
+                
+                .col-6.align-self-end
                     input.form-control.me-2.mb-1(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="userSearch()")
             if users.length > 0
                 table.table.table-hover.table-dark.table-striped.table-bordered(id="table")

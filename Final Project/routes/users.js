@@ -23,16 +23,24 @@ router.get('/change-password/:id', async function(req, res, next) {
       }
 
       else if(checkUser._id.toHexString() == req.user.id){
-          const user = await accountController.findByID(req.params.id)
-          res.render('changePasswordAdmin', { loggedUser: req.user,  user: user });
+          if(checkUser.admin == "n"){
+            res.render('changePasswordUser', { loggedUser: req.user,  user: checkUser });
+          }
+          else if(checkUser.admin == "admin"){
+            res.render('changePasswordAdmin', { loggedUser: req.user,  user: checkUser });
+          }
+          else{
+            return res.redirect('/error')
+          }
       }
-  }
-});
+    }
+  });
 
 // POST change user password
 router.post('/change-password/:id',
   body('password').trim().notEmpty().withMessage('The new password cannot be empty!'),
   body('password').trim().isLength({min:8}).withMessage('Password must be at least 8 characters!'),
+  body('confirmPassword').trim().notEmpty().withMessage('The password confirmation cannot be empty!'),
   async function(req, res, next){
   // Check if user is authenticated
   if(!req.isAuthenticated()){
@@ -46,12 +54,26 @@ router.post('/change-password/:id',
       }
 
       else if(checkUser._id.toHexString() == req.user.id){
-          const result = validationResult(req);
+          const result = validationResult(req).array();
+          console.log(result)
+          // This sets the error for the passwords not matching
+          if (req.body.password != req.body.confirmPassword){
+            let errorMessage = JSON.parse('{"msg":"The passwords must match!"}')
+            result.push(errorMessage)
+          }
           //console.log(req.body)
           console.log(result)
-          if(result.isEmpty() != true){
-              const user = await accountController.findByID(req.params.id)
-              res.render('changePasswordAdmin', { loggedUser: req.user,  user: user, error: result.array() })
+          if(result.length > 0){
+            if(checkUser.admin == "n"){
+              res.render('changePasswordUser', { loggedUser: req.user,  user: checkUser, error: result })
+            }
+            else if(checkUser.admin == "admin"){
+              res.render('changePasswordAdmin', { loggedUser: req.user,  user: checkUser, error: result })
+            }
+            else{
+              return res.redirect('/error')
+            }
+              
           }
 
           else{
@@ -59,7 +81,15 @@ router.post('/change-password/:id',
               const newPassword = crypto.pbkdf2Sync(req.body.password, user.salt, 1000000, 64, 'sha512').toString('hex')
               console.log(newPassword)
               await accountController.changePassword(req.params.id, newPassword)
-              res.redirect('/admin')
+              if(checkUser.admin == "n"){
+                res.redirect('/home/success')
+              }
+              else if(checkUser.admin == "admin"){
+                res.redirect('/admin/success')
+              }
+              else{
+                return res.redirect('/error')
+              }
           }
       }
   }

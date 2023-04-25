@@ -24,6 +24,24 @@ router.get('/', async function(req, res, next) {
     }
 });
 
+/* GET admin page on password change. */
+router.get('/success', async function(req, res, next) {
+    // Check if user is admin
+    if(!req.isAuthenticated()){
+        return res.redirect('/login')
+    }
+
+    else if(req.isAuthenticated()){
+        const checkUser = await accountController.findByID(req.user.id)
+        if(checkUser.admin != "admin"){
+            return res.redirect('/error/permission')
+        }
+        else if(checkUser.admin == "admin"){
+            res.render('admin', { title: 'Admin', loggedUser: req.user, password: 'y' });
+        }
+    }
+});
+
 /*
 
     This portion of the router is dedicated to the item source pages

@@ -37,7 +37,7 @@ block content
                 .col-4
                     input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="itemSearch()")
             if items.length > 0
-                .d-flex.flex-wrap
+                .d-flex.flex-wrap.justify-content-between
                     each value in items
                         .d-flex.flex-column.border.border-primary.rounded.px-4.py-4.mx-4.my-4(class="itemBox")
                             h3(class="itemName")=value.name
@@ -46,8 +46,8 @@ block content
                             if value.type == 'enemy'
                                 p(class="itemLevel")=`Enemy level: ${value.sourceLevel}`
                             if value.type == 'chest'
-                                p(class="itemLevel")=`This item is available from this treasure chest starting from level: ${value.sourceLevel}`
-                                
+                                p(class="itemLevel")=`Treasure chest level: ${value.sourceLevel}`
+
 block customScripts
     script(src='/javascripts/userSearch.js')
 

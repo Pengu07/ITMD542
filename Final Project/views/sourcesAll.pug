@@ -42,9 +42,7 @@ block content
             p.lead List of all possible item sources
             a(href="/admin/create-source")
                 button.btn.btn-success.createBtn.mb-1 Create new source!
-            form.d-flex.w-50.float-right(role="search")
-                input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="sourceSearch()")
-                button.btn.btn-outline-success(type="submitSearch") Search
+            input.form-control.me-2(type="search" placeholder="Search" aria-label="Search", id="search", onkeyup="sourceSearch()")
             if sources.length > 0
                 table.table.table-hover.table-dark.table-striped.table-bordered(id="table")
                     thead

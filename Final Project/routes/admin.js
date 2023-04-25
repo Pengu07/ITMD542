@@ -665,6 +665,7 @@ router.get('/change-user-password/:id', async function(req, res, next) {
 router.post('/change-user-password/:id',
     body('password').trim().notEmpty().withMessage('The new password cannot be empty!'),
     body('password').trim().isLength({min:8}).withMessage('Password must be at least 8 characters!'),
+    body('confirmPassword').trim().notEmpty().withMessage('The password confirmation cannot be empty!'),
     async function(req, res, next){
     // Check if user is admin
     if(!req.isAuthenticated()){
@@ -678,12 +679,16 @@ router.post('/change-user-password/:id',
         }
 
         else if(checkUser.admin == "admin"){
-            const result = validationResult(req);
-            //console.log(req.body)
+            const result = validationResult(req).array();
             console.log(result)
-            if(result.isEmpty() != true){
+            // This sets the error for the passwords not matching
+            if (req.body.password != req.body.confirmPassword){
+              let errorMessage = JSON.parse('{"msg":"The passwords must match!"}')
+              result.push(errorMessage)
+            }
+            if(result.length > 0){
                 const user = await accountController.findByID(req.params.id)
-                res.render('usersPassword', { loggedUser: req.user,  user: user, error: result.array() })
+                res.render('usersPassword', { loggedUser: req.user,  user: user, error: result})
             }
 
             else{

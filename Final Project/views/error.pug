@@ -1,8 +1,14 @@
 extends layout
 
 block content
-  h1 Error!
-  p.lead There seems to have been an error! Sorry about that.
-  if error
-    h2= error.status
-    pre #{error.stack}
+  main.container
+    .bg-body-tertiary.p-5.rounded
+      h1 Error!
+      if permission
+        p.lead You do not have permission to view that link!
+        a.btn-primary.btn(href="/home") Return to home
+      else
+        p.lead There seems to have been an error! Sorry about that.
+      if error
+        h2= error.status
+        pre #{error.stack}

@@ -41,7 +41,8 @@ block content
             if error
                 .alert.alert-danger
                     each value in error
-                        p=value.msg
+                        ul
+                            li=value.msg
             form(method='POST', action='/admin/create-item', id="itemForm")
                 .row.g-3
 

@@ -17,25 +17,26 @@ block content
                         hr.dropdown-divider
                     li
                         a.dropdown-item(href="/login/signout") Sign out
-
+                        
             button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation")
                 span.navbar-toggler-icon
             
             .collapse.navbar-collapse(id="navbarCollapse")
                 ul.navbar-nav.me-auto.mb-2.mb-md-0
                     li.nav-item
-                    a.nav-link.active(aria-current="page" href="#Home") Home
+                    a.nav-link.active(aria-current="page", href="/home") Home
                     
                     li.nav-item
-                    a.nav-link(href="#Link") Link
-                    
-                    li.nav-item
-                    a.nav-link.disabled(Disabled) Disabled
+                    a.nav-link(href="/home/all-items") Items
     
     main.container
+        if password
+            .alert.alert-success
+                h5.text-center Your password has been successfully changed!
         .bg-body-tertiary.p-5.rounded
             h1=title
-            p.lead Welcome to #{title}!
+            p.lead Welcome to the home page!
+            p.lead As you are a normal user, use the button at the top to go to the items page and search for all the possible items!
 
 
 

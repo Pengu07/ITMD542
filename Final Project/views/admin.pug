@@ -36,6 +36,9 @@ block content
                     a.nav-link(href="/admin/all-users") Users
     
     main.container
+        if password
+            .alert.alert-success
+                h5.text-center Your password has been successfully changed!
         .bg-body-tertiary.p-5.rounded
             h1=title
             p.lead Welcome to the admin page!

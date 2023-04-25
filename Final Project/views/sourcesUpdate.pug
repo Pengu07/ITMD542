@@ -42,7 +42,8 @@ block content
             if error
                 .alert.alert-danger
                     each value in error
-                        p=value.msg
+                        ul
+                            li=value.msg
             form(method='POST', action=`/admin/edit-source/${source._id}`)
                 .row.g-3
                 

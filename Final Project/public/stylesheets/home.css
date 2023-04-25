@@ -4,3 +4,6 @@ body {
     padding-top: 4.5rem;
   }
   
+#hidden{
+  display:none !important;
+}
